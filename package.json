@@ -1,16 +1,18 @@
 {
   "name": "internetarchive-api-wrapper",
   "version": "1.0.0",
-  "main": "server.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "start": "NODE_PATH=./ ts-node-dev --respawn --require dotenv/config server.ts",
-    "start:dev": "NODE_PATH=./ ts-node-dev --inspect=4321 --respawn --require dotenv/config server.ts",
-    "lint": "eslint --fix server.ts",
+    "start": "NODE_PATH=./ ts-node-dev --respawn --require dotenv/config index.ts",
+    "start:dev": "NODE_PATH=./ ts-node-dev --inspect=4321 --respawn --require dotenv/config index.ts",
+    "lint": "eslint --fix index.ts",
     "postinstall": "yarn build"
   },
   "dependencies": {
     "@types/node": "^16.7.10",
+    "@types/qs": "^6.9.7",
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "qs": "^6.10.1",

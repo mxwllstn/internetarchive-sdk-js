@@ -15,7 +15,6 @@ export interface CreateItemResponse {
   status: number
   data: { id: string }
 }
-
 export interface FileUpload {
   path: string
   filename: string
