@@ -26,12 +26,14 @@ const InternetArchive = {
     collection: string,
     creator: string,
     metadata: Record<string, unknown>,
-    mediatype: Mediatype
+    mediatype: Mediatype,
+    testmode?: boolean
   ): Promise<CreateItemResponse> => {
     const headers = {
       authorization: `LOW ${IA_AUTH_TOKEN}`,
       'x-amz-auto-make-bucket': 1,
       'x-archive-meta01-collection': collection,
+      ...(testmode && { 'x-archive-meta02-collection': 'test_collection' }),
       'x-archive-meta-creator': creator,
       'x-archive-meta-mediatype': mediatype
     }
