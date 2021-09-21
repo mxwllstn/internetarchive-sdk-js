@@ -5,9 +5,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "start": "NODE_PATH=./ ts-node-dev --respawn --require dotenv/config index.ts",
-    "start:dev": "NODE_PATH=./ ts-node-dev --inspect=4321 --respawn --require dotenv/config index.ts",
-    "lint": "eslint --fix index.ts",
+    "lint": "eslint --fix ./src/index.ts",
     "postinstall": "yarn build"
   },
   "dependencies": {
