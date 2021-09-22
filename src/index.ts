@@ -18,9 +18,9 @@ class InternetArchive {
   token: string
   collection: string
   creator: string
-  testmode?: boolean
-  constructor(token: string, collection: string, creator: string, testmode: boolean) {
-    (this.token = token), (this.collection = collection), (this.creator = creator), (this.testmode = testmode || false)
+  options?: { testmode: boolean }
+  constructor(token: string, collection: string, creator: string, options?: { testmode: boolean }) {
+    (this.token = token), (this.collection = collection), (this.creator = creator), (this.options = options)
   }
 
   createItem = async (
@@ -31,7 +31,7 @@ class InternetArchive {
       authorization: `LOW ${this.token}`,
       'x-amz-auto-make-bucket': 1,
       'x-archive-meta01-collection': this.collection,
-      ...(this.testmode && { 'x-archive-meta02-collection': 'test_collection' }),
+      ...(this.options?.testmode && { 'x-archive-meta02-collection': 'test_collection' }),
       'x-archive-meta-creator': this.creator,
       'x-archive-meta-mediatype': mediatype
     }

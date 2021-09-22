@@ -2,8 +2,8 @@ import express, { Router, Request, Response } from 'express'
 import InternetArchive, { Mediatype } from '../../src'
 // import multer from 'multer'
 
-const { IA_TOKEN, IA_COLLECTION, IA_CREATOR, IA_TEST_MODE } = process.env || {}
-const ia = new InternetArchive(<string>IA_TOKEN, <string>IA_COLLECTION, <string>IA_CREATOR, <string>IA_TEST_MODE === 'true')
+const { IA_TOKEN, IA_COLLECTION, IA_CREATOR } = process.env || {}
+const ia = new InternetArchive(<string>IA_TOKEN, <string>IA_COLLECTION, <string>IA_CREATOR, { testmode: true })
 const { createItem, getItems } = ia
 
 const router = <Router>express.Router()
