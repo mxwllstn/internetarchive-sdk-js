@@ -19,15 +19,19 @@ export interface FileUpload {
   path: string
   filename: string
 }
+class InternetArchive {
+  token: string
+  constructor(token: string) {
+    this.token = token
+  }
 
-const InternetArchive = {
-  createItem: async (
+  async createItem(
     collection: string,
     creator: string,
     metadata: Record<string, unknown>,
     mediatype: Mediatype,
     testmode?: boolean
-  ): Promise<CreateItemResponse> => {
+  ): Promise<CreateItemResponse> {
     const headers = {
       authorization: `LOW ${IA_AUTH_TOKEN}`,
       'x-amz-auto-make-bucket': 1,
@@ -56,8 +60,9 @@ const InternetArchive = {
       status: 201,
       data: { id }
     }
-  },
-  getItems: async (collection: string, creator: string, fields: string): Promise<AxiosResponse> => {
+  }
+
+  async getItems(collection: string, creator: string, fields: string): Promise<AxiosResponse> {
     const params = {
       q: `((collection:${collection})(creator:"${creator}"))`,
       ...(fields && { 'fl[]': fields.replace(/ /g, '') }),
@@ -66,9 +71,13 @@ const InternetArchive = {
       'sort[]': 'date desc'
     }
     return await axios.get('https://archive.org/advancedsearch.php', { params })
-  },
-  getItem: async (id: string): Promise<AxiosResponse> => await axios.get(`https://archive.org/metadata/${id}`),
-  updateItem: async (id: string, metadata: Record<string, unknown>): Promise<AxiosResponse> => {
+  }
+
+  async getItem(id: string): Promise<AxiosResponse> {
+    return await axios.get(`https://archive.org/metadata/${id}`)
+  }
+
+  async updateItem(id: string, metadata: Record<string, unknown>): Promise<AxiosResponse> {
     const patch = Object.keys(metadata).map(key => {
       return {
         op: 'add',
@@ -86,15 +95,17 @@ const InternetArchive = {
       'content-type': 'application/x-www-form-urlencoded'
     }
     return await axios.post(`http://archive.org/metadata/${id}`, qs.stringify(data), { headers })
-  },
-  uploadFiles: async (files: FileUpload[] | { path: string; filename: string }[], id: string): Promise<void> => {
+  }
+
+  async uploadFiles(files: FileUpload[] | { path: string; filename: string }[], id: string): Promise<void> {
     await Promise.all(
       files.map(async file => {
-        await InternetArchive.uploadFile(file, id)
+        await this.uploadFile(file, id)
       })
     )
-  },
-  uploadFile: async (file: FileUpload, id: string): Promise<void> => {
+  }
+
+  async uploadFile(file: FileUpload, id: string): Promise<void> {
     const { path, filename } = file
     const headers = {
       authorization: `LOW ${IA_AUTH_TOKEN}`
@@ -103,4 +114,5 @@ const InternetArchive = {
     return await axios.put(`http://s3.us.archive.org/${id}/${filename}`, data, { headers })
   }
 }
+
 export default InternetArchive
