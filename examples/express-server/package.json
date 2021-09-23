@@ -17,7 +17,7 @@
     "dotenv": "^10.0.0",
     "typescript": "^4.3.2",
     "express": "^4.17.1",
-    "internetarchive-api-wrapper": "../",
+    "internetarchive-api-wrapper": "git+ssh://git@github.com:mxwllstn/internetarchive-api-wrapper",
     "morgan-body": "^2.6.6",
     "multer": "^1.4.3"
   },
