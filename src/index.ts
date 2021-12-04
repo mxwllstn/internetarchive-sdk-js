@@ -103,7 +103,8 @@ class InternetArchive {
   uploadFile = async (file: FileUpload, id: string): Promise<void> => {
     const { path, filename } = file
     const headers = {
-      authorization: `LOW ${this.token}`
+      authorization: `LOW ${this.token}`,
+      'x-archive-interactive-priority': 1
     }
     const data = fs.readFileSync(path)
     return await axios.put(`http://s3.us.archive.org/${id}/${filename}`, data, { headers })
