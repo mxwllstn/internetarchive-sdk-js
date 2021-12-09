@@ -88,6 +88,3 @@ sw.*
 
 # Vim swap files
 *.swp
-
-# Route exports for slushie-nuxt
-routes/*.js
