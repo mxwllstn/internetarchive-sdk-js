@@ -16,23 +16,23 @@ export interface FileUpload {
 }
 class InternetArchive {
   token: string
-  collection: string
-  creator: string
   options?: { testmode: boolean }
-  constructor(token: string, collection: string, creator: string, options?: { testmode: boolean }) {
-    (this.token = token), (this.collection = collection), (this.creator = creator), (this.options = options)
+  constructor(
+    token: string,
+    options?: { testmode: boolean }
+  ) {
+    (this.token = token), (this.options = options)
   }
 
-  createItem = async (
-    metadata: Record<string, unknown>,
-    mediatype: Mediatype
-  ): Promise<CreateItemResponse> => {
+  createItem = async (metadata: Record<string, string>, mediatype: Mediatype): Promise<CreateItemResponse> => {
+    if (!this.token) {
+      throw new Error('api token required')
+    }
     const headers = {
       authorization: `LOW ${this.token}`,
       'x-amz-auto-make-bucket': 1,
-      'x-archive-meta01-collection': this.collection,
+      ...(metadata.collection && { 'x-archive-meta01-collection': metadata.collection }),
       ...(this.options?.testmode && { 'x-archive-meta02-collection': 'test_collection' }),
-      'x-archive-meta-creator': this.creator,
       'x-archive-meta-mediatype': mediatype
     }
 
@@ -41,7 +41,12 @@ class InternetArchive {
     })
 
     const uuid = randomBytes(8).toString('hex').toLowerCase()
-    const title = metadata.title ? `${this.creator}-${metadata.title}-${uuid}` : `${this.collection}-${uuid}`
+    const title =
+      metadata.title && metadata.subject
+        ? `${metadata.subject}-${metadata.title}-${uuid}`
+        : metadata.collection
+        ? `${metadata.collection}-${uuid}`
+        : uuid
     const id = slugify(title, {
       replacement: '-',
       lower: true,
@@ -57,13 +62,34 @@ class InternetArchive {
     }
   }
 
-  getItems = async (fields?: string):Promise<AxiosResponse> => {
+  getItems = async (
+    filters: { collection?: string; subject?: string; creator?: string },
+    fields?: string
+  ): Promise<AxiosResponse> => {
     const params = {
-      q: `((collection:${this.collection})(creator:"${this.creator}"))`,
+      q:
+        filters?.collection && filters?.subject && filters?.creator
+          ? `((collection:${filters?.collection})(subject:"${filters?.subject}")(creator:"${filters?.creator}"))`
+          : filters?.collection && filters?.subject
+          ? `((collection:${filters.collection})(subject:"${filters.subject}"))`
+          : filters?.collection && filters?.creator
+          ? `((collection:${filters.collection})(creator:"${filters.creator}"))`
+          : filters?.subject && filters?.creator
+          ? `((subject:${filters.subject})(creator:"${filters.creator}"))`
+          : filters?.collection
+          ? `(collection:${filters.collection})`
+          : filters?.subject
+          ? `(subject:${filters.subject})`
+          : filters?.creator
+          ? `(creator:${filters.creator})`
+          : null,
       ...(fields && { 'fl[]': fields.replace(/ /g, '') }),
       rows: '10000',
       output: 'json',
       'sort[]': 'date desc'
+    }
+    if (!params.q) {
+      throw new Error('collection, subject, or creator required')
     }
     return await axios.get('https://archive.org/advancedsearch.php', { params })
   }
