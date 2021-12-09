@@ -1,9 +1,9 @@
 import express, { Router, Request, Response } from 'express'
-import InternetArchive, { Mediatype } from 'internetarchive-api-wrapper'
+import InternetArchive, { Mediatype } from '../..'
 import multer from 'multer'
 
-const { IA_TOKEN, IA_COLLECTION, IA_CREATOR } = process.env || {}
-const ia = new InternetArchive(<string>IA_TOKEN, <string>IA_COLLECTION, <string>IA_CREATOR, { testmode: true })
+const { IA_TOKEN, IA_COLLECTION, IA_SUBJECT, IA_CREATOR } = process.env || {}
+const ia = new InternetArchive(<string>IA_TOKEN, { testmode: true })
 const { createItem, getItems, updateItem, getItem } = ia
 
 const router = <Router>express.Router()
@@ -33,9 +33,9 @@ const handleError = (res: Response, error: any) => {
     const { status, data } = error.response
     res.status(status).send({ data })
   } else {
-    // eslint-disable-next-line no-console
-    console.log(error)
     const { message } = error
+    // eslint-disable-next-line no-console
+    console.log(message)
     res.status(400).send({ error: message })
   }
 }
@@ -52,7 +52,13 @@ router.post(
   ): Promise<void> => {
     try {
       /* create item with requested metadata */
-      const metadata = req.body
+      const metadata = {
+        ...req.body,
+        ...(IA_COLLECTION && { collection: <string>IA_COLLECTION }),
+        ...(IA_SUBJECT && { subject: <string>IA_SUBJECT }),
+        ...(IA_CREATOR && { creator: <string>IA_CREATOR })  
+      }
+      
       const { mediatype } = req.params
       const response = await createItem(metadata, <Mediatype>mediatype || 'data')
       handleResponse(res, response)
@@ -62,40 +68,36 @@ router.post(
   }
 )
 
-router.put(
-  '/item/:id',
-  async (
-    req: Request & { body: any },
-    res: Response
-  ): Promise<void> => {
-    try {
-      const { id } = req.params
-      const metadata = req.body
-      handleResponse(res, await updateItem(id, metadata))
-    } catch (error: any) {
-      handleError(res, error)
-    }
-  }
-)
-
-router.get('/item', async (_req: Request, res: Response): Promise<void> => {
+router.put('/item/:id', async (req: Request & { body: any }, res: Response): Promise<void> => {
   try {
-    handleResponse(res, await getItems())
+    const { id } = req.params
+    const metadata = req.body
+    handleResponse(res, await updateItem(id, metadata))
   } catch (error: any) {
     handleError(res, error)
   }
 })
 
-router.get(
-  '/item/:id',
-  async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params
-      handleResponse(res, await getItem(id))
-    } catch (error: any) {
-      handleError(res, error)
+router.get('/item', async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const filters = {
+      ...(IA_COLLECTION && { collection: <string>IA_COLLECTION }),
+      ...(IA_SUBJECT && { subject: <string>IA_SUBJECT }),
+      ...(IA_CREATOR && { creator: <string>IA_CREATOR })
     }
+    handleResponse(res, await getItems(filters))
+  } catch (error: any) {
+    handleError(res, error)
   }
-)
+})
+
+router.get('/item/:id', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params
+    handleResponse(res, await getItem(id))
+  } catch (error: any) {
+    handleError(res, error)
+  }
+})
 
 export default router

@@ -1,7 +1,7 @@
 import express, { Express } from 'express'
 import dotenv from 'dotenv'
 import morganBody from 'morgan-body'
-import router from './routes/router'
+import router from './router'
 
 const app = <Express>express()
 
