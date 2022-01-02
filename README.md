@@ -1,5 +1,5 @@
 # internetarchive-api-wrapper
-NodeJS wrapper for Internet Archive APIs
+NodeJS / Typescript wrapper for Internet Archive APIs
 ## Internet Archive APIs
 https://archive.org/services/docs/api/
 ## Build Setup
