@@ -8,6 +8,13 @@
     "lint": "eslint --fix ./src/index.ts",
     "postinstall": "yarn build"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mxwllstn/internetarchive-api-wrapper.git"
+  },
   "dependencies": {
     "@types/node": "^16.7.10",
     "@types/qs": "^6.9.7",
