@@ -1,5 +1,5 @@
 {
-  "name": "internetarchive-api-wrapper",
+  "name": "@mxwllstn/internetarchive-api-wrapper",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
