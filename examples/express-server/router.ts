@@ -1,5 +1,5 @@
 import express, { Router, Request, Response } from 'express'
-import InternetArchive, { Mediatype } from '../..'
+import InternetArchive, { Mediatype } from '@mxwllstn/internetarchive-api-wrapper'
 import multer from 'multer'
 
 const { IA_TOKEN, IA_COLLECTION, IA_SUBJECT, IA_CREATOR } = process.env || {}
