@@ -2,9 +2,13 @@ import express, { Router, Request, Response } from 'express'
 import InternetArchive, { Mediatype } from '@mxwllstn/internetarchive-api-wrapper'
 import multer from 'multer'
 
-const { IA_TOKEN, IA_COLLECTION, IA_SUBJECT, IA_CREATOR } = process.env || {}
+const { IA_TOKEN } = process.env || {}
 const ia = new InternetArchive(<string>IA_TOKEN, { testmode: true })
 const { createItem, getItems, updateItem, getItem } = ia
+
+const collection = 'example collection'
+const subject = 'example subject'
+const creator = 'example creator'
 
 const router = <Router>express.Router()
 
@@ -51,12 +55,16 @@ router.post(
     res: Response
   ): Promise<void> => {
     try {
+      const collection = 'test collection'
+      const subject = 'test subject'
+      const creator = 'test creator'
+
       /* create item with requested metadata */
       const metadata = {
         ...req.body,
-        ...(IA_COLLECTION && { collection: <string>IA_COLLECTION }),
-        ...(IA_SUBJECT && { subject: <string>IA_SUBJECT }),
-        ...(IA_CREATOR && { creator: <string>IA_CREATOR })  
+        ...(collection && { collection }),
+        ...(subject && { subject }),
+        ...(creator && { creator })  
       }
       
       const { mediatype } = req.params
@@ -81,9 +89,9 @@ router.put('/item/:id', async (req: Request & { body: any }, res: Response): Pro
 router.get('/item', async (_req: Request, res: Response): Promise<void> => {
   try {
     const filters = {
-      ...(IA_COLLECTION && { collection: <string>IA_COLLECTION }),
-      ...(IA_SUBJECT && { subject: <string>IA_SUBJECT }),
-      ...(IA_CREATOR && { creator: <string>IA_CREATOR })
+      ...(collection && { collection }),
+      ...(subject && { subject }),
+      ...(creator && { creator })
     }
     handleResponse(res, await getItems(filters))
   } catch (error: any) {
