@@ -1,5 +1,5 @@
 {
-  "name": "@mxwllstn/internetarchive-api-wrapper",
+  "name": "internetarchive-sdk-js",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,12 +8,9 @@
     "lint": "eslint --fix ./src/index.ts",
     "postinstall": "yarn build"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mxwllstn/internetarchive-api-wrapper.git"
+    "url": "https://github.com/mxwllstn/internetarchive-sdk-js"
   },
   "dependencies": {
     "@types/node": "^16.7.10",
