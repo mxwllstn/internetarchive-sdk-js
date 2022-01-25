@@ -16,7 +16,7 @@ yarn add internetarchive-sdk-js
 
 ## Usage
 ```javascript
-import InternetArchive from 'internetarchive-api-wrapper'
+import InternetArchive from 'internetarchive-sdk-js'
 const ia = new InternetArchive(process.env.IA_TOKEN, { testmode: true })
 
 (async () => {

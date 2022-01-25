@@ -2,14 +2,12 @@ import fs from 'fs'
 import { randomBytes } from 'crypto'
 import slugify from 'slugify'
 import qs from 'qs'
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 
 export type Mediatype = 'audio' | 'collection' | 'data' | 'etree' | 'image' | 'movies' | 'software' | 'texts' | 'web'
-
-export interface CreateItemResponse {
-  status: number
-  data: { id: string }
-}
+export type Id = string | number
+export type Item = Record<string, Id>
+export type List = Item[]
 export interface FileUpload {
   path: string
   filename: string
@@ -17,16 +15,23 @@ export interface FileUpload {
 class InternetArchive {
   token: string
   options?: { testmode: boolean }
-  constructor(
-    token: string,
-    options?: { testmode: boolean }
-  ) {
+  static default: typeof InternetArchive
+  constructor(token: string, options?: { testmode: boolean }) {
     (this.token = token), (this.options = options)
   }
 
-  createItem = async (metadata: Record<string, string>, mediatype: Mediatype): Promise<CreateItemResponse> => {
+  createItem = async (metadata: Record<string, string>, mediatype: Mediatype): Promise<Item> => {
     if (!this.token) {
       throw new Error('api token required')
+    }
+    if (!mediatype) {
+      throw new Error(
+        'mediatype must be specified. possible mediatypes include: audio, collection, data, etree, image, movies, software, texts, web'
+      )
+    }
+    const { collection } = metadata || {}
+    if (!collection) {
+      throw new Error('collection is required.')
     }
     const headers = {
       authorization: `LOW ${this.token}`,
@@ -56,49 +61,51 @@ class InternetArchive {
 
     /* create document with metadata */
     await axios.put(`http://s3.us.archive.org/${id}`, null, { headers })
-    return {
-      status: 201,
-      data: { id }
-    }
+    return { id }
   }
 
   getItems = async (
     filters: { collection?: string; subject?: string; creator?: string },
-    fields?: string
-  ): Promise<AxiosResponse> => {
+    options: {
+      fields?: string
+      rows?: string
+    }
+  ): Promise<Item> => {
+    const { fields, rows } = options || {}
     const params = {
       q:
         filters?.collection && filters?.subject && filters?.creator
-          ? `((collection:${filters?.collection})(subject:"${filters?.subject}")(creator:"${filters?.creator}"))`
+          ? `collection:(${filters?.collection})&subject:("${filters?.subject}")&creator:("${filters?.creator}")`
           : filters?.collection && filters?.subject
-          ? `((collection:${filters.collection})(subject:"${filters.subject}"))`
+          ? `collection:(${filters.collection})&subject:("${filters.subject}")`
           : filters?.collection && filters?.creator
-          ? `((collection:${filters.collection})(creator:"${filters.creator}"))`
+          ? `collection:(${filters.collection})&creator:("${filters.creator}")`
           : filters?.subject && filters?.creator
-          ? `((subject:${filters.subject})(creator:"${filters.creator}"))`
+          ? `subject:(${filters.subject})&creator:("${filters.creator}")`
           : filters?.collection
-          ? `(collection:${filters.collection})`
+          ? `collection:(${filters.collection})`
           : filters?.subject
-          ? `(subject:${filters.subject})`
+          ? `subject:(${filters.subject})`
           : filters?.creator
-          ? `(creator:${filters.creator})`
+          ? `creator:(${filters.creator})`
           : null,
       ...(fields && { 'fl[]': fields.replace(/ /g, '') }),
-      rows: '10000',
+      rows: rows || 50,
       output: 'json',
       'sort[]': 'date desc'
     }
     if (!params.q) {
       throw new Error('collection, subject, or creator required')
     }
-    return await axios.get('https://archive.org/advancedsearch.php', { params })
+    console.log(params)
+    return (await axios.get('https://archive.org/advancedsearch.php', { params })).data
   }
 
-  getItem = async (id: string): Promise<AxiosResponse> => {
-    return await axios.get(`https://archive.org/metadata/${id}`)
+  getItem = async (id: string): Promise<Item> => {
+    return (await axios.get(`https://archive.org/metadata/${id}`)).data
   }
 
-  updateItem = async (id: string, metadata: Record<string, unknown>): Promise<AxiosResponse> => {
+  updateItem = async (id: string, metadata: Item): Promise<Item> => {
     const patch = Object.keys(metadata).map(key => {
       return {
         op: 'add',
@@ -115,7 +122,7 @@ class InternetArchive {
     const headers = {
       'content-type': 'application/x-www-form-urlencoded'
     }
-    return await axios.post(`http://archive.org/metadata/${id}`, qs.stringify(data), { headers })
+    return (await axios.post(`http://archive.org/metadata/${id}`, qs.stringify(data), { headers })).data
   }
 
   uploadFiles = async (files: FileUpload[] | { path: string; filename: string }[], id: string): Promise<void> => {
@@ -133,8 +140,12 @@ class InternetArchive {
       'x-archive-interactive-priority': 1
     }
     const data = fs.readFileSync(path)
-    return await axios.put(`http://s3.us.archive.org/${id}/${filename}`, data, { headers })
+    return (await axios.put(`http://s3.us.archive.org/${id}/${filename}`, data, { headers })).data
   }
 }
 
+/* exports for commonjs and es6 */
+module.exports = InternetArchive
+module.exports.InternetArchive = InternetArchive
+module.exports.default = InternetArchive
 export default InternetArchive
