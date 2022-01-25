@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "dist/server.js",
   "types": "dist/server.d.ts",
+  "license": "MIT",
   "scripts": {
     "build": "npx tsc",
     "start": "yarn build && node dist/server.js",

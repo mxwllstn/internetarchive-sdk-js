@@ -1,8 +1,9 @@
 {
   "name": "internetarchive-sdk-js",
-  "version": "v1.0.0-beta",
+  "version": "v1.0.1-beta",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "license": "MIT",
   "scripts": {
     "build": "npx tsc",
     "lint": "eslint --fix ./src/index.ts",
