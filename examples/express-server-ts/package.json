@@ -6,7 +6,6 @@
   "scripts": {
     "build": "npx tsc",
     "start": "NODE_PATH=./ ts-node-dev --respawn --require dotenv/config server.ts",
-    "start:dev": "NODE_PATH=./ ts-node-dev --inspect=4321 --respawn --require dotenv/config server.ts",
     "lint": "eslint --fix ./server.ts",
     "postinstall": "yarn build"
   },
