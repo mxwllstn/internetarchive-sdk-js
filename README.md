@@ -19,13 +19,16 @@ yarn add internetarchive-sdk-js
 import InternetArchive from 'internetarchive-sdk-js'
 const ia = new InternetArchive(process.env.IA_TOKEN, { testmode: true })
 
-(async () => {
+;(async () => {
   const filters = {
-    ...(collection && { collection }),
-    ...(subject && { subject }),
-    ...(creator && { creator })
+    collection: 'library_of_congress',
+    subject: 'basketball'
   }
-  const items = await ia.getItems(filters)
-  console.log(items)
+  const options = {
+    rows: 10,
+    fields: 'identifier'
+  }
+  const items = await ia.getItems(filters, options)
+  console.log(items.response.docs)
 })()
 ```
