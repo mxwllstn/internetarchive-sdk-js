@@ -1,9 +1,19 @@
 {
   "name": "internetarchive-sdk-js",
-  "version": "v1.0.1-beta",
+  "version": "v1.0.2-beta",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "author": "Max Stein <maxwell.stein@gmail.com> (https://maxstein.net",
   "license": "MIT",
+  "description": "NodeJS / Typescript SDK for Internet Archive APIs",
+  "keywords": [
+    "archive",
+    "internet archive",
+    "archive.org",
+    "sdk",
+    "api",
+    "typescript"
+  ],
   "scripts": {
     "build": "npx tsc",
     "lint": "eslint --fix ./src/index.ts",
