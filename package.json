@@ -1,6 +1,6 @@
 {
   "name": "internetarchive-sdk-js",
-  "version": "v1.0.2-beta",
+  "version": "1.0.3-beta",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Max Stein <maxwell.stein@gmail.com> (https://maxstein.net",
@@ -17,21 +17,20 @@
   "scripts": {
     "build": "npx tsc",
     "lint": "eslint --fix ./src/index.ts",
-    "postinstall": "yarn build"
+    "prepublish": "yarn lint && yarn build"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/mxwllstn/internetarchive-sdk-js"
   },
   "dependencies": {
-    "@types/node": "^16.7.10",
-    "@types/qs": "^6.9.7",
     "axios": "^0.21.1",
     "qs": "^6.10.1",
-    "slugify": "^1.6.0",
-    "typescript": "^4.3.2"
+    "slugify": "^1.6.0"
   },
   "devDependencies": {
+    "@types/node": "^16.7.10",
+    "@types/qs": "^6.9.7",
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.6.1",
     "eslint": "^7.10.0",
@@ -41,7 +40,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^5.0.0",
     "lint-staged": "^11.0.0",
-    "prettier": "^2.1.1"
+    "prettier": "^2.1.1",
+    "typescript": "^4.3.2"
   },
   "engines": {
     "node": "^14.17"
