@@ -58,6 +58,7 @@
     ]
   },
   "resolutions": {
+    "follow-redirects": "^1.14.8",
     "**/@typescript-eslint/eslint-plugin": "^4.6.1",
     "**/@typescript-eslint/parser": "^4.6.1"
   }
