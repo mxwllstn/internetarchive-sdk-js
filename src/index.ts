@@ -5,12 +5,16 @@ import qs from 'qs'
 import axios from 'axios'
 
 export type Mediatype = 'audio' | 'collection' | 'data' | 'etree' | 'image' | 'movies' | 'software' | 'texts' | 'web'
-export type Id = string | number
-export type Item = Record<string, Id>
+export type Id = string | number | boolean
+export type Item = Record<string, Id | FileUpload | FileUpload[] | Params>
+export type Params = Record<string, any>
 export type List = Item[]
 export interface FileUpload {
   path: string
   filename: string
+}
+export interface ItemsResponse {
+  response: { docs: Item[] }
 }
 class InternetArchive {
   token: string
@@ -70,7 +74,7 @@ class InternetArchive {
       fields?: string
       rows?: string
     }
-  ): Promise<Item> => {
+  ): Promise<ItemsResponse> => {
     const { fields, rows } = options || {}
     const params = {
       q:
@@ -90,7 +94,7 @@ class InternetArchive {
           ? `creator:(${filters.creator})`
           : null,
       ...(fields && { 'fl[]': fields.replace(/ /g, '') }),
-      rows: rows || 50,
+      rows: Number(rows) || 50,
       output: 'json',
       'sort[]': 'date desc'
     }
