@@ -1,6 +1,6 @@
 {
   "name": "internetarchive-sdk-js",
-  "version": "1.0.8-beta",
+  "version": "1.0.9-beta",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Max Stein <maxwell.stein@gmail.com> (https://maxstein.net",
