@@ -18,9 +18,9 @@ export interface ItemsResponse {
 }
 class InternetArchive {
   token: string
-  options?: { testmode: boolean }
+  options?: { testmode?: boolean }
   static default: typeof InternetArchive
-  constructor(token: string, options?: { testmode: boolean }) {
+  constructor(token: string, options?: { testmode?: boolean }) {
     (this.token = token), (this.options = options)
   }
 
