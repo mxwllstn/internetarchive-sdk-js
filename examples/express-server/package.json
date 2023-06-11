@@ -8,26 +8,23 @@
     "start": "nodemon -r dotenv/config server.js"
   },
   "dependencies": {
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "internetarchive-sdk-js": "^1.0.6-beta",
-    "morgan-body": "^2.6.6",
-    "multer": "^1.4.3"
+    "internetarchive-sdk-js": "^1.0.11-beta",
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "follow-redirects": "^1.15.2",
+    "morgan-body": "^2.6.9",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
-    "eslint": "^7.10.0",
-    "eslint-config-standard": "^16.0.2",
+    "eslint": "^8.42.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.3.0",
-    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-standard": "^5.0.0",
-    "nodemon": "^2.0.15",
-    "prettier": "^2.1.1"
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8"
   },
   "engines": {
     "node": ">=12"
-  },
-  "resolutions": {
-    "follow-redirects": "^1.14.8"
   }
 }
