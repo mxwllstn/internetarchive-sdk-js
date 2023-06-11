@@ -17,9 +17,10 @@ yarn add internetarchive-sdk-js
 ```
 
 ## Usage
+### Get Items
 ```javascript
 import InternetArchive from 'internetarchive-sdk-js'
-const ia = new InternetArchive(process.env.IA_TOKEN, { testmode: true })
+const ia = new InternetArchive()
 
 ;(async () => {
   const filters = {
@@ -32,5 +33,22 @@ const ia = new InternetArchive(process.env.IA_TOKEN, { testmode: true })
   }
   const items = await ia.getItems(filters, options)
   console.log(items.response.docs)
+})()
+```
+  
+### Update Item (Requires ["S3-Like API Key"](https://archive.org/account/s3.php))
+```javascript
+import InternetArchive from 'internetarchive-sdk-js'
+const { API_KEY } = process.env || {}
+const ia = new InternetArchive(API_KEY, { testmode: true })
+
+;(async () => {
+  const itemId = 'internetarchive-test-item-id'
+  try {
+    const response = await ia.updateItem(itemId, { title: 'new title' })
+    console.log(response)
+  } catch (error) {
+    console.log(error.response.data)
+  }
 })()
 ```
