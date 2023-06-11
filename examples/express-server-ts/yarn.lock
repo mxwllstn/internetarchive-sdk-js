@@ -1122,8 +1122,8 @@ inherits@2, inherits@2.0.4, inherits@^2.0.3, inherits@~2.0.3:
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
-internetarchive-sdk-js@../../:
-  version "1.0.10-beta"
+internetarchive-sdk-js@../..:
+  version "1.0.11-beta"
   dependencies:
     axios "^1.4.0"
     follow-redirects "^1.15.2"

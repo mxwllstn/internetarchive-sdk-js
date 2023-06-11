@@ -17,7 +17,7 @@ export interface ItemsResponse {
   response: { docs: Item[] }
 }
 class InternetArchive {
-  token: string
+  token?: string
   options?: { testmode?: boolean }
   static default: typeof InternetArchive
   constructor(token: string, options?: { testmode?: boolean }) {
@@ -101,7 +101,6 @@ class InternetArchive {
     if (!params.q) {
       throw new Error('collection, subject, or creator required')
     }
-    console.log(params)
     return (await axios.get('https://archive.org/advancedsearch.php', { params })).data
   }
 
@@ -110,6 +109,9 @@ class InternetArchive {
   }
 
   updateItem = async (id: string, metadata: Item): Promise<Item> => {
+    if (!this.token) {
+      throw new Error('api token required')
+    }
     const patch = Object.keys(metadata).map(key => {
       return {
         op: 'add',
