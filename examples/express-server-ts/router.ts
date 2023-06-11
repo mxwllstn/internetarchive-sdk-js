@@ -1,5 +1,5 @@
 import express, { Router, Request, Response } from 'express'
-import InternetArchive, { Mediatype } from 'internetarchive-sdk-js'
+import InternetArchive, { Mediatype, ItemsResponse, Item } from 'internetarchive-sdk-js'
 import multer from 'multer'
 import fs from 'node:fs/promises'
 import { tmpdir } from 'os'
@@ -24,7 +24,7 @@ const upload = multer({ storage })
 
 export type ApiResponse = {
   status: number
-  data: Record<string, unknown>
+  data: ItemsResponse | Item
 }
 
 const handleResponse = (res: Response, response: ApiResponse) => {
