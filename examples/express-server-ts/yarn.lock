@@ -1122,8 +1122,10 @@ inherits@2, inherits@2.0.4, inherits@^2.0.3, inherits@~2.0.3:
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
-internetarchive-sdk-js@../..:
-  version "1.0.11-beta"
+internetarchive-sdk-js@^1.0.14-beta:
+  version "1.0.14-beta"
+  resolved "https://registry.yarnpkg.com/internetarchive-sdk-js/-/internetarchive-sdk-js-1.0.14-beta.tgz#dc8d40316944e84c721107f3d1e822a9eefea48d"
+  integrity sha512-W89gsU2Ep+nj8Mm4GUHBY8HiyKPqYRrhmmDsKj5nft4JdtvvpOFRpNzYaGJAF4yi2YHvdPU5LB3ZVv3Kx4IcqA==
   dependencies:
     axios "^1.4.0"
     follow-redirects "^1.15.2"
@@ -2101,9 +2103,9 @@ which@^2.0.1:
     isexe "^2.0.0"
 
 word-wrap@^1.2.3:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.3.tgz#610636f6b1f703891bd34771ccb17fb93b47079c"
-  integrity sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.5.tgz#d2c45c6dd4fbce621a66f136cbe328afd0410b34"
+  integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
 wrap-ansi@^6.2.0:
   version "6.2.0"
