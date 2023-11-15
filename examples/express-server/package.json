@@ -26,5 +26,8 @@
   },
   "engines": {
     "node": ">=14"
+  },
+  "resolutions": {
+    "axios": "^1.6.2"
   }
 }
