@@ -5,10 +5,10 @@ import fs from 'node:fs/promises'
 import { tmpdir } from 'os'
 
 const { IA_TOKEN } = process.env || {}
-const ia = new InternetArchive(<string>IA_TOKEN, { testmode: true })
+const ia = new InternetArchive((IA_TOKEN as string), { testmode: true })
 const { uploadFiles, createItem, getItems, updateItem, getItem } = ia
 
-const router = <Router>express.Router()
+const router = express.Router() as Router
 
 const storage = multer.diskStorage({
   async destination(_req, _file, cb) {
@@ -17,12 +17,12 @@ const storage = multer.diskStorage({
   },
   filename(_req, file, cb) {
     cb(null, file.originalname)
-  }
+  },
 })
 
 const upload = multer({ storage })
 
-export type ApiResponse = {
+export interface ApiResponse {
   status: number
   data: ItemsResponse | Item
 }
@@ -37,7 +37,6 @@ const handleError = (res: Response, error: any) => {
     res.status(status).send({ data })
   } else {
     const { message } = error
-    // eslint-disable-next-line no-console
     console.log(message)
     res.status(400).send({ error: message })
   }
@@ -50,9 +49,7 @@ router.post(
     try {
       /* check for uploaded file */
       if (req.files && Object.keys(req.files).length > 0) {
-        const { upload: upload } = req.files as {
-          [fieldname: string]: Express.Multer.File[]
-        }
+        const { upload: upload } = req.files as Record<string, Express.Multer.File[]>
         if (!upload) {
           throw new Error('no file attached')
         }
@@ -65,14 +62,14 @@ router.post(
           ...body,
           collection: collection || 'opensource_image',
           ...(subject && { subject }),
-          ...(description && { description })
+          ...(description && { description }),
         }
-        const item = await createItem(metadata, <Mediatype>mediatype || 'data')
+        const item = await createItem(metadata, mediatype as Mediatype || 'data')
         const id = item.id as string
 
         /* upload files to document bucket */
         const files = [...upload]
-        if (files && files.length) {
+        if (files?.length) {
           await uploadFiles(files, id)
         }
 
@@ -88,16 +85,16 @@ router.post(
     } catch (error: any) {
       handleError(res, error)
     }
-  }
+  },
 )
 
 router.put('/item/:id', async (req: Request & { body: any }, res: Response): Promise<void> => {
   try {
     const { id } = req.params
-    const metadata =
-      Object.keys(req.body).length === 0
+    const metadata
+      = Object.keys(req.body).length === 0
         ? {
-            title: 'test title'
+            title: 'test title',
           }
         : req.body
 
@@ -109,16 +106,16 @@ router.put('/item/:id', async (req: Request & { body: any }, res: Response): Pro
 
 router.get('/item', async (req: Request, res: Response): Promise<void> => {
   try {
-    const payload =
-      Object.keys(req.body).length === 0
+    const payload
+      = Object.keys(req.body).length === 0
         ? {
             filters: {
-              collection: 'library_of_congress'
+              collection: 'library_of_congress',
             },
             options: {
               rows: 100,
-              fields: 'identifier'
-            }
+              fields: 'identifier',
+            },
           }
         : req.body
     const { filters, options } = payload || {}
