@@ -6,12 +6,20 @@ import axios from 'axios'
 
 export type Mediatype = 'audio' | 'collection' | 'data' | 'etree' | 'image' | 'movies' | 'software' | 'texts' | 'web'
 export type Id = string | number | boolean
-export type Item = Record<string, Id | FileUpload | FileUpload[] | Params>
-export type Params = Record<string, any>
+export type Item = Record<string, any>
 export type List = Item[]
 export interface FileUpload {
   path: string
   filename: string
+}
+
+export interface FileUploadHeaders {
+  authorization: string
+  'x-amz-auto-make-bucket': number
+  'x-archive-meta01-collection'?: string | number
+  'x-archive-meta02-collection'?: string | number
+  'x-archive-meta-mediatype': Mediatype
+  [key: `x-archive-meta-${string}`]: string | number
 }
 export interface ItemsResponse {
   response: { docs: Item[] }
@@ -24,7 +32,7 @@ class InternetArchive {
     (this.token = token), (this.options = options)
   }
 
-  createItem = async (metadata: Record<string, string>, mediatype: Mediatype): Promise<Item> => {
+  createItem = async (metadata: Item, mediatype: Mediatype): Promise<Item> => {
     if (!this.token) {
       throw new Error('api token required')
     }
@@ -43,10 +51,12 @@ class InternetArchive {
       ...(metadata.collection && { 'x-archive-meta01-collection': metadata.collection }),
       ...(this.options?.testmode && { 'x-archive-meta02-collection': 'test_collection' }),
       'x-archive-meta-mediatype': mediatype
-    }
+    } as FileUploadHeaders
 
     Object.keys(metadata).forEach(key => {
-      (headers as Record<string, unknown>)[`x-archive-meta-${key}`] = metadata[key]
+      if (metadata?.[key]) {
+        headers[`x-archive-meta-${key}`] = String(metadata[key])
+      }
     })
 
     const uuid = randomBytes(8).toString('hex').toLowerCase()
@@ -64,8 +74,8 @@ class InternetArchive {
     })
 
     /* create document with metadata */
-    await axios.put(`http://s3.us.archive.org/${id}`, null, { headers })
-    return { id }
+    await axios.put(`http://s3.us.archive.org/${id}`, null, { headers } as any)
+    return { id, ...metadata }
   }
 
   getItems = async (
