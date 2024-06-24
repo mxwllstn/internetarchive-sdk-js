@@ -160,8 +160,4 @@ class InternetArchive {
   }
 }
 
-/* exports for commonjs and es6 */
-module.exports = InternetArchive
-module.exports.InternetArchive = InternetArchive
-module.exports.default = InternetArchive
 export default InternetArchive

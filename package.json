@@ -1,8 +1,12 @@
 {
   "name": "internetarchive-sdk-js",
-  "version": "1.0.20-beta",
+  "version": "1.0.21-beta",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
   "author": "Max Stein <maxwell.stein@gmail.com> (https://maxstein.net",
   "license": "MIT",
   "description": "NodeJS / Typescript SDK for Internet Archive APIs",
@@ -19,7 +23,7 @@
   ],
   "type": "module",
   "scripts": {
-    "build": "npx tsc",
+    "build": "npx tsc && npx rollup dist/index.js --file dist/index.cjs --format cjs",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "prepublish": "npm run lint && npm run build"
@@ -41,6 +45,7 @@
     "eslint": "^8.57.0",
     "globals": "^15.6.0",
     "lint-staged": "^15.2.7",
+    "rollup": "^4.18.0",
     "tsx": "^4.11.0",
     "typescript": "^5.5.2",
     "typescript-eslint": "^7.10.0"
