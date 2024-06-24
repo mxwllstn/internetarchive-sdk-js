@@ -10,8 +10,8 @@ app.use('/api', router)
 
 dotenv.config()
 
-const host = process.env.HOST || '0.0.0.0'
-const port = process.env.PORT || 8081
+const host = process.env.HOST ?? '0.0.0.0'
+const port = process.env.PORT ?? 8081
 
 if (process.env.NODE_ENV !== 'production') {
   morganBody(app)

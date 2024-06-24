@@ -14,7 +14,7 @@ export interface FileUpload {
 }
 
 export interface FileUploadHeaders {
-  authorization: string
+  'authorization': string
   'x-amz-auto-make-bucket': number
   'x-archive-meta01-collection'?: string | number
   'x-archive-meta02-collection'?: string | number
@@ -38,7 +38,7 @@ class InternetArchive {
     }
     if (!mediatype) {
       throw new Error(
-        'mediatype must be specified. possible mediatypes include: audio, collection, data, etree, image, movies, software, texts, web'
+        'mediatype must be specified. possible mediatypes include: audio, collection, data, etree, image, movies, software, texts, web',
       )
     }
     const { collection } = metadata || {}
@@ -46,31 +46,31 @@ class InternetArchive {
       throw new Error('collection is required.')
     }
     const headers = {
-      authorization: `LOW ${this.token}`,
+      'authorization': `LOW ${this.token}`,
       'x-amz-auto-make-bucket': 1,
       ...(metadata.collection && { 'x-archive-meta01-collection': metadata.collection }),
       ...(this.options?.testmode && { 'x-archive-meta02-collection': 'test_collection' }),
-      'x-archive-meta-mediatype': mediatype
+      'x-archive-meta-mediatype': mediatype,
     } as FileUploadHeaders
 
-    Object.keys(metadata).forEach(key => {
+    Object.keys(metadata).forEach((key) => {
       if (metadata?.[key]) {
         headers[`x-archive-meta-${key}`] = String(metadata[key])
       }
     })
 
     const uuid = randomBytes(8).toString('hex').toLowerCase()
-    const title =
-      metadata.title && metadata.subject
+    const title
+      = metadata.title && metadata.subject
         ? `${metadata.subject}-${metadata.title}-${uuid}`
         : metadata.collection
-        ? `${metadata.collection}-${uuid}`
-        : uuid
+          ? `${metadata.collection}-${uuid}`
+          : uuid
     const id = slugify(title, {
       replacement: '-',
       lower: true,
       strict: true,
-      trim: true
+      trim: true,
     })
 
     /* create document with metadata */
@@ -79,34 +79,34 @@ class InternetArchive {
   }
 
   getItems = async (
-    filters: { collection?: string; subject?: string; creator?: string },
+    filters: { collection?: string, subject?: string, creator?: string },
     options: {
       fields?: string
       rows?: string
-    }
+    },
   ): Promise<ItemsResponse> => {
     const { fields, rows } = options || {}
     const params = {
-      q:
+      'q':
         filters?.collection && filters?.subject && filters?.creator
           ? `collection:(${filters?.collection})&subject:("${filters?.subject}")&creator:("${filters?.creator}")`
           : filters?.collection && filters?.subject
-          ? `collection:(${filters.collection})&subject:("${filters.subject}")`
-          : filters?.collection && filters?.creator
-          ? `collection:(${filters.collection})&creator:("${filters.creator}")`
-          : filters?.subject && filters?.creator
-          ? `subject:(${filters.subject})&creator:("${filters.creator}")`
-          : filters?.collection
-          ? `collection:(${filters.collection})`
-          : filters?.subject
-          ? `subject:(${filters.subject})`
-          : filters?.creator
-          ? `creator:(${filters.creator})`
-          : null,
+            ? `collection:(${filters.collection})&subject:("${filters.subject}")`
+            : filters?.collection && filters?.creator
+              ? `collection:(${filters.collection})&creator:("${filters.creator}")`
+              : filters?.subject && filters?.creator
+                ? `subject:(${filters.subject})&creator:("${filters.creator}")`
+                : filters?.collection
+                  ? `collection:(${filters.collection})`
+                  : filters?.subject
+                    ? `subject:(${filters.subject})`
+                    : filters?.creator
+                      ? `creator:(${filters.creator})`
+                      : null,
       ...(fields && { 'fl[]': fields.replace(/ /g, '') }),
-      rows: Number(rows) || 50,
-      output: 'json',
-      'sort[]': 'date desc'
+      'rows': Number(rows) || 50,
+      'output': 'json',
+      'sort[]': 'date desc',
     }
     if (!params.q) {
       throw new Error('collection, subject, or creator required')
@@ -122,38 +122,38 @@ class InternetArchive {
     if (!this.token) {
       throw new Error('api token required')
     }
-    const patch = Object.keys(metadata).map(key => {
+    const patch = Object.keys(metadata).map((key) => {
       return {
         op: 'add',
         path: `/${key}`,
-        value: metadata[key]
+        value: metadata[key],
       }
     })
     const data = {
       '-target': 'metadata',
       '-patch': patch,
-      access: this.token.split(':')[0],
-      secret: this.token.split(':')[1]
+      'access': this.token.split(':')[0],
+      'secret': this.token.split(':')[1],
     }
     const headers = {
-      'content-type': 'application/x-www-form-urlencoded'
+      'content-type': 'application/x-www-form-urlencoded',
     }
     return (await axios.post(`http://archive.org/metadata/${id}`, qs.stringify(data), { headers })).data
   }
 
-  uploadFiles = async (files: FileUpload[] | { path: string; filename: string }[], id: string): Promise<void> => {
+  uploadFiles = async (files: FileUpload[] | { path: string, filename: string }[], id: string): Promise<void> => {
     await Promise.all(
-      files.map(async file => {
+      files.map(async (file) => {
         await this.uploadFile(file, id)
-      })
+      }),
     )
   }
 
   uploadFile = async (file: FileUpload, id: string): Promise<void> => {
     const { path, filename } = file
     const headers = {
-      authorization: `LOW ${this.token}`,
-      'x-archive-interactive-priority': 1
+      'authorization': `LOW ${this.token}`,
+      'x-archive-interactive-priority': 1,
     }
     const data = fs.readFileSync(path)
     return (await axios.put(`http://s3.us.archive.org/${id}/${filename}`, data, { headers })).data

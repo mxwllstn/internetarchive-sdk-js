@@ -1,17 +1,17 @@
 import express, { Express } from 'express'
 import dotenv from 'dotenv'
 import morganBody from 'morgan-body'
-import router from './router'
+import router from './router.js'
 
-const app = <Express>express()
+const app = express() as Express
 
 app.use(express.json())
 app.use('/api', router)
 
 dotenv.config()
 
-const host = process.env.HOST || '0.0.0.0'
-const port = process.env.PORT || 8081
+const host = process.env.HOST ?? '0.0.0.0'
+const port = process.env.PORT ?? 8081
 
 if (process.env.NODE_ENV !== 'production') {
   morganBody(app)
