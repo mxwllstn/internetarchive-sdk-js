@@ -1,6 +1,6 @@
 {
   "name": "internetarchive-sdk-js",
-  "version": "1.0.21-beta",
+  "version": "1.0.22-beta",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
