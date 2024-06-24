@@ -1,0 +1,29 @@
+{
+  "eslint.runtime": "node",
+  "eslint.format.enable": true,
+
+  // Enable the ESlint flat config support
+  "eslint.useFlatConfig": true,
+
+  // Disable the default formatter, use eslint instead
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
+
+  // Enable eslint for all supported languages
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "json",
+    "jsonc",
+    "yaml",
+    "toml"
+  ],
+  
+  // Avoid polluting search results with lockfile content
+  "search.exclude": {
+    "pnpm-lock.yaml": true
+  },
+
+  // Ensure VSCode uses pnpm instead of npm
+  "npm.packageManager": "pnpm"
+}

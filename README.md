@@ -7,7 +7,11 @@ NodeJS / Typescript SDK for Internet Archive APIs
 https://archive.org/services/docs/api/
 
 ## Install
-Use `npm` to install the module
+Use `pnpm` to install the module
+```bash
+pnpm install internetarchive-sdk-js
+```
+Or use `npm` to install the module
 ```bash
 npm install internetarchive-sdk-js
 ```
