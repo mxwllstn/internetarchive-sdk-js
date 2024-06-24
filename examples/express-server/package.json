@@ -12,7 +12,7 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "internetarchive-sdk-js": "1.0.19-beta",
+    "internetarchive-sdk-js": "1.0.20-beta",
     "morgan-body": "^2.6.9",
     "multer": "1.4.5-lts.1"
   },
