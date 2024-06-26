@@ -26,7 +26,7 @@ yarn add internetarchive-sdk-js
 import InternetArchive from 'internetarchive-sdk-js'
 const ia = new InternetArchive()
 
-;(async () => {
+void (async () => {
   const filters = {
     collection: 'library_of_congress',
     subject: 'basketball'
@@ -46,7 +46,7 @@ import InternetArchive from 'internetarchive-sdk-js'
 const { API_KEY } = process.env || {}
 const ia = new InternetArchive(API_KEY, { testmode: true })
 
-;(async () => {
+void (async () => {
   const itemId = 'internetarchive-test-item-id'
   try {
     const response = await ia.updateItem(itemId, { title: 'new title' })
