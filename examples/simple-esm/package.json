@@ -5,6 +5,6 @@
   "author": "Max Stein <maxwell.stein@gmail.com> (https://maxstein.net",
   "license": "MIT",
   "dependencies": {
-    "internetarchive-sdk-js": "1.0.22-beta"
+    "internetarchive-sdk-js": "1.0.23-beta"
   }
 }
