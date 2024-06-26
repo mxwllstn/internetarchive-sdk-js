@@ -23,7 +23,10 @@
   ],
   "type": "module",
   "scripts": {
-    "build": "npx tsc && npx rollup dist/index.js --file dist/index.cjs --format cjs",
+    "build": "npm run build-clean && npm run build-esm && npm run build-cjs",
+    "build-clean": "rm -rf dist",
+    "build-esm": "npx tsc",
+    "build-cjs": "npx rollup dist/index.js --file dist/index.cjs --format cjs --external fs,crypto,slugify,qs,axios",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "prepublish": "npm run lint && npm run build"
