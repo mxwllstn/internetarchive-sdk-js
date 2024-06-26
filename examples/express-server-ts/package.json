@@ -1,8 +1,9 @@
 {
-  "name": "internetarchive-sdk-ts-example",
-  "version": "1.0.0",
+  "name": "internetarchive-example-express-server-ts",
+  "version": "0.0.0",
   "main": "dist/server.js",
   "types": "dist/server.d.ts",
+  "author": "Max Stein <maxwell.stein@gmail.com> (https://maxstein.net",
   "license": "MIT",
   "type": "module",
   "scripts": {

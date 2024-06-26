@@ -1,5 +1,5 @@
 import express, { Router, Request, Response } from 'express'
-import InternetArchive, { Mediatype, ItemsResponse, Item } from 'internetarchive-sdk-js'
+import InternetArchive, { Mediatype, Item } from 'internetarchive-sdk-js'
 import multer from 'multer'
 import fs from 'node:fs/promises'
 import { tmpdir } from 'os'
@@ -24,7 +24,7 @@ const upload = multer({ storage })
 
 export interface ApiResponse {
   status: number
-  data: ItemsResponse | Item
+  data: Item
 }
 
 const handleResponse = (res: Response, response: ApiResponse) => {
@@ -45,7 +45,7 @@ const handleError = (res: Response, error: any) => {
 router.post(
   '/item/:mediatype?',
   upload.fields([{ name: 'upload', maxCount: 1 }]),
-  async (req: Request & { body: any }, res: Response): Promise<void> => {
+  async (req: Request, res: Response): Promise<void> => {
     try {
       /* check for uploaded file */
       if (req.files && Object.keys(req.files).length > 0) {
@@ -88,7 +88,7 @@ router.post(
   },
 )
 
-router.put('/item/:id', async (req: Request & { body: any }, res: Response): Promise<void> => {
+router.put('/item/:id', async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params
     const metadata

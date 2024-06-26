@@ -20,6 +20,14 @@ export default tseslint.config(
         ...globals.node,
       },
     },
+  },
+  {
+    files: ['**/*.js'],
+    rules: {
+      '@typescript-eslint/no-var-requires': 'off',
+    },
+  },
+  {
     files: ['**/*.js', '**/*.ts'],
     rules: {
       'space-before-function-paren': [

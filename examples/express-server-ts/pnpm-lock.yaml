@@ -24,8 +24,8 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       internetarchive-sdk-js:
-        specifier: 1.0.18-beta
-        version: 1.0.18-beta
+        specifier: 1.0.20-beta
+        version: 1.0.20-beta
       morgan-body:
         specifier: ^2.6.9
         version: 2.6.9
@@ -430,9 +430,9 @@ packages:
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
-  internetarchive-sdk-js@1.0.18-beta:
-    resolution: {integrity: sha512-UqOgWz2Xu4x4GLTUrgTgCef+oB3ioqQ/ouh9xyEekau80ARyT0zFFt7oAza/pyS5KNYOYrvUwvtDxXU5BLM3nw==}
-    engines: {node: '>=14'}
+  internetarchive-sdk-js@1.0.20-beta:
+    resolution: {integrity: sha512-a18ZvJjR7cBca9jRRc9ek7j8U6ixa0j9DYDnyvj6fg8kjpCUJnZOK+YwIBbh2L68ij7VPoYjG6tK6OsYbBfMxQ==}
+    engines: {node: '>=18'}
 
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
@@ -1042,10 +1042,9 @@ snapshots:
 
   inherits@2.0.4: {}
 
-  internetarchive-sdk-js@1.0.18-beta:
+  internetarchive-sdk-js@1.0.20-beta:
     dependencies:
       axios: 1.7.2
-      follow-redirects: 1.15.6
       qs: 6.12.1
       slugify: 1.6.6
     transitivePeerDependencies:

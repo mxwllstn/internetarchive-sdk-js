@@ -1,0 +1,10 @@
+{
+  "name": "internetarchive-sdk-js-example-simple-esm",
+  "version": "0.0.0",
+  "type": "module",
+  "author": "Max Stein <maxwell.stein@gmail.com> (https://maxstein.net",
+  "license": "MIT",
+  "dependencies": {
+    "internetarchive-sdk-js": "1.0.22-beta"
+  }
+}
