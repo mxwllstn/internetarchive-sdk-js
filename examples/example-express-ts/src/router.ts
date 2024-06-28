@@ -6,7 +6,6 @@ import { tmpdir } from 'os'
 
 const { IA_TOKEN } = process.env || {}
 const ia = new InternetArchive((IA_TOKEN as string), { testmode: true })
-const { uploadFiles, createItem, getItems, updateItem, getItem } = ia
 
 const router = express.Router() as Router
 
@@ -27,19 +26,15 @@ export interface ApiResponse {
   data: Item
 }
 
-const handleResponse = (res: Response, response: ApiResponse) => {
+function handleResponse(res: Response, response: ApiResponse) {
   const { status, data } = response
   res.status(status || 200).send(data)
 }
-const handleError = (res: Response, error: any) => {
-  if (error.response) {
-    const { status, data } = error.response
-    res.status(status).send({ data })
-  } else {
-    const { message } = error
-    console.log(message)
-    res.status(400).send({ error: message })
-  }
+
+function handleError(res: Response, error: any) {
+  const { message } = error
+  console.log(message)
+  res.status(error.statusCode || 400).send({ error: message })
 }
 
 router.post(
@@ -57,24 +52,26 @@ router.post(
         /* create item with requested metadata */
         const { mediatype } = req.params || {}
         const body = req.body
-        const { collection, subject, description } = body || {}
+        console.log({ body })
+        const { subject, description } = body || {}
+        const collection = body?.collection || 'opensource_image'
         const metadata = {
           ...body,
-          collection: collection || 'opensource_image',
           ...(subject && { subject }),
           ...(description && { description }),
         }
-        const item = await createItem(metadata, mediatype as Mediatype || 'data')
+        const item = await ia.createItem(collection, mediatype as Mediatype || 'data', metadata)
+        console.log({ item })
         const id = item.id as string
 
         /* upload files to document bucket */
         const files = [...upload]
         if (files?.length) {
-          await uploadFiles(files, id)
+          await ia.uploadFiles(files, id)
         }
 
         /* fetch item and return as response */
-        const data = await getItem(id)
+        const data = await ia.getItem(id)
         data.id = id
         data.uploads = files as any
 
@@ -98,7 +95,7 @@ router.put('/item/:id', async (req: Request, res: Response): Promise<void> => {
           }
         : req.body
 
-    handleResponse(res, { status: 200, data: await updateItem(id, metadata) })
+    handleResponse(res, { status: 200, data: await ia.updateItem(id, metadata) })
   } catch (error: any) {
     handleError(res, error)
   }
@@ -120,7 +117,7 @@ router.get('/item', async (req: Request, res: Response): Promise<void> => {
         : req.body
     const { filters, options } = payload || {}
 
-    handleResponse(res, { status: 200, data: await getItems(filters, options) })
+    handleResponse(res, { status: 200, data: await ia.getItems(filters, options) })
   } catch (error: any) {
     handleError(res, error)
   }
@@ -130,7 +127,7 @@ router.get('/item/:id', async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params
 
-    handleResponse(res, { status: 200, data: await getItem(id) })
+    handleResponse(res, { status: 200, data: await ia.getItem(id) })
   } catch (error: any) {
     handleError(res, error)
   }

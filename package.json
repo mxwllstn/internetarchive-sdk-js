@@ -1,6 +1,6 @@
 {
   "name": "internetarchive-sdk-js",
-  "version": "1.0.24-beta",
+  "version": "1.0.25",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,7 +26,7 @@
     "build": "npm run build-clean && npm run build-esm && npm run build-cjs",
     "build-clean": "rm -rf dist",
     "build-esm": "npx tsc",
-    "build-cjs": "npx rollup dist/index.js --file dist/index.cjs --format cjs --external fs,crypto,slugify,qs,axios",
+    "build-cjs": "npx rollup dist/index.js --file dist/index.cjs --format cjs --external fs,crypto,slugify,qs",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "prepublish": "npm run lint && npm run build"
@@ -36,7 +36,6 @@
     "url": "https://github.com/mxwllstn/internetarchive-sdk-js"
   },
   "dependencies": {
-    "axios": "^1.7.2",
     "qs": "^6.12.1",
     "slugify": "^1.6.6"
   },
