@@ -1,6 +1,6 @@
 import fs from 'fs'
 import qs from 'qs'
-import Api from './Api.js'
+import HttpClient from './HttpClient.js'
 import endpoints from './endpoints.js'
 import { generateItemIdFromMetadata } from './utils.js'
 
@@ -33,11 +33,11 @@ export interface IaOptions {
 class InternetArchive {
   token?: string
   options?: IaOptions
-  api: Api
+  httpClient: HttpClient
   static default: typeof InternetArchive
   constructor(token: string, options: IaOptions = {}) {
     (this.token = token), (this.options = options)
-    this.api = new Api(token, options)
+    this.httpClient = new HttpClient(token, options)
   }
 
   async createItem(collection: string, mediatype: Mediatype, metadata: Item): Promise<Item> {
@@ -66,7 +66,7 @@ class InternetArchive {
     const id = generateItemIdFromMetadata(metadata)
 
     /* create document with metadata */
-    await this.api.makeRequest(endpoints.createItem, { path: id, headers }) as any
+    await this.httpClient.makeRequest(endpoints.createItem, { path: id, headers }) as any
     return { id, ...metadata }
   }
 
@@ -103,11 +103,11 @@ class InternetArchive {
     if (!params.q) {
       throw new Error('collection, subject, or creator required')
     }
-    return await this.api.makeRequest(endpoints.getItems, { params }) as any
+    return await this.httpClient.makeRequest(endpoints.getItems, { params }) as any
   }
 
   async getItem(id: string): Promise<Item> {
-    return await this.api.makeRequest(endpoints.getItem, { path: id }) as any
+    return await this.httpClient.makeRequest(endpoints.getItem, { path: id }) as any
   }
 
   async updateItem(id: string, metadata: Item): Promise<Item> {
@@ -130,7 +130,7 @@ class InternetArchive {
     const headers = {
       'content-type': 'application/x-www-form-urlencoded;',
     }
-    return await this.api.makeRequest(endpoints.updateItem, { path: id, data: qs.stringify(data), headers }) as any
+    return await this.httpClient.makeRequest(endpoints.updateItem, { path: id, data: qs.stringify(data), headers }) as any
   }
 
   async uploadFiles(files: FileUpload[] | { path: string, filename: string }[], id: string): Promise<void> {
@@ -147,7 +147,7 @@ class InternetArchive {
       'x-archive-interactive-priority': 1,
     }
     const data = fs.readFileSync(path)
-    return await this.api.makeRequest(endpoints.uploadFile, { data, path: `${id}/${filename}`, headers }) as any
+    return await this.httpClient.makeRequest(endpoints.uploadFile, { data, path: `${id}/${filename}`, headers }) as any
   }
 }
 

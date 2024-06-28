@@ -10,10 +10,10 @@ interface RequestOptions {
   headers?: Record<string, any>
 }
 
-class Api {
+class HttpClient {
   token: string
   options: IaOptions
-  static default: typeof Api
+  static default: typeof HttpClient
   constructor(token: string, options: IaOptions) {
     (this.token = token, this.options = options)
   }
@@ -62,4 +62,4 @@ class Api {
   }
 }
 
-export default Api
+export default HttpClient
