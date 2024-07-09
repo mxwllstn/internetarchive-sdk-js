@@ -47,7 +47,7 @@ class HttpClient {
         ...(data && { body: data }),
       })
       if (!response.ok) {
-        const message = response.status === 403 ? 'archive.org token is incorrect.' : JSON.parse(await response.text())?.error || response.statusText
+        const message = response.status === 403 ? 'archive.org token is incorrect.' : endpoint?.emptyBody ? response.statusText : JSON.parse(await response.text())?.error || response.statusText
         throw new IaApiError(message, response.status)
       } else {
         return endpoint?.emptyBody
