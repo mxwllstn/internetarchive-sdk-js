@@ -18,8 +18,9 @@ export interface FileUploadHeaders {
   [key: `x-archive-meta-${string}`]: string | number
 }
 export interface FileUpload {
-  path: string
   filename: string
+  path?: string | undefined
+  data?: Buffer | undefined
 }
 
 export interface ItemsResponse {
@@ -63,7 +64,7 @@ class InternetArchive {
       }
     })
 
-    const id = generateItemIdFromMetadata(metadata)
+    const id = metadata?.identifier || generateItemIdFromMetadata(metadata)
 
     /* create document with metadata */
     await this.httpClient.makeRequest(endpoints.createItem, { path: id, headers }) as any
@@ -142,11 +143,17 @@ class InternetArchive {
   }
 
   async uploadFile(file: FileUpload, id: string): Promise<void> {
-    const { path, filename } = file
+    const { path, filename, data: buffer } = file || {}
     const headers = {
       'x-archive-interactive-priority': 1,
     }
-    const data = fs.readFileSync(path)
+    if (!filename) {
+      throw new Error('filename required')
+    }
+    const data = buffer ? buffer : path ? fs.readFileSync(path) : null
+    if (!data) {
+      throw new Error('buffer or path required')
+    }
     return await this.httpClient.makeRequest(endpoints.uploadFile, { data, path: `${id}/${filename}`, headers }) as any
   }
 }
