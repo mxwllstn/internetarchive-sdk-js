@@ -41,4 +41,9 @@ export default {
     auth: true,
     emptyBody: true,
   } as Endpoint,
+  getItemTasks: {
+    method: 'GET',
+    baseUrl: 'https://archive.org/services/tasks.php',
+    auth: true,
+  } as Endpoint,
 }
