@@ -31,6 +31,16 @@ export interface IaOptions {
   testmode?: boolean
 }
 
+export interface TaskCriteria {
+  task_id?: number
+  server?: string
+  cmd?: string
+  args?: string
+  submitter?: string
+  priority?: number
+  wait_admin?: number
+}
+
 class InternetArchive {
   token?: string
   options?: IaOptions
@@ -164,9 +174,10 @@ class InternetArchive {
     return await this.httpClient.makeRequest(endpoints.deleteFile, { path, headers }) as any
   }
 
-  async getItemTasks(id: string): Promise<Item> {
+  async getItemTasks(id: string, criteria?: TaskCriteria): Promise<Item> {
     const params = {
       identifier: id,
+      ...criteria,
     }
     return await this.httpClient.makeRequest(endpoints.getItemTasks, { params }) as any
   }
