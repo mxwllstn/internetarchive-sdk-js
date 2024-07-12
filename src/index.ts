@@ -136,7 +136,7 @@ class InternetArchive {
 
   async uploadFiles(files: FileUpload[] | { path: string, filename: string }[], id: string): Promise<void> {
     await Promise.all(
-      files.map(async (file) => {
+      files.filter(x => x).map(async (file) => {
         await this.uploadFile(file, id)
       }),
     )
@@ -155,6 +155,13 @@ class InternetArchive {
       throw new Error('buffer or path required')
     }
     return await this.httpClient.makeRequest(endpoints.uploadFile, { data, path: `${id}/${filename}`, headers }) as any
+  }
+
+  async deleteFile(path: string): Promise<void> {
+    const headers = {
+      'x-archive-cascade-delete': 1,
+    }
+    return await this.httpClient.makeRequest(endpoints.deleteFile, { path, headers }) as any
   }
 }
 

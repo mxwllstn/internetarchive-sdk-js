@@ -35,4 +35,10 @@ export default {
     auth: true,
     emptyBody: true,
   } as Endpoint,
+  deleteFile: {
+    method: 'DELETE',
+    baseUrl: 'http://s3.us.archive.org',
+    auth: true,
+    emptyBody: true,
+  } as Endpoint,
 }
