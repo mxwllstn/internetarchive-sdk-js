@@ -88,12 +88,11 @@ router.post(
 router.put('/item/:id', async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params
-    const metadata
-      = Object.keys(req.body).length === 0
-        ? {
-            title: 'test title',
-          }
-        : req.body
+    const metadata = Object.keys(req.body).length === 0
+      ? {
+          title: 'test title',
+        }
+      : req.body
 
     handleResponse(res, { status: 200, data: await ia.updateItem(id, metadata) })
   } catch (error: any) {
@@ -103,18 +102,17 @@ router.put('/item/:id', async (req: Request, res: Response): Promise<void> => {
 
 router.get('/item', async (req: Request, res: Response): Promise<void> => {
   try {
-    const payload
-      = Object.keys(req.body).length === 0
-        ? {
-            filters: {
-              collection: 'library_of_congress',
-            },
-            options: {
-              rows: 100,
-              fields: 'identifier',
-            },
-          }
-        : req.body
+    const payload = Object.keys(req.body).length === 0
+      ? {
+          filters: {
+            collection: 'library_of_congress',
+          },
+          options: {
+            rows: 100,
+            fields: 'identifier',
+          },
+        }
+      : req.body
     const { filters, options } = payload || {}
 
     handleResponse(res, { status: 200, data: await ia.getItems(filters, options) })
@@ -128,6 +126,16 @@ router.get('/item/:id', async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params
 
     handleResponse(res, { status: 200, data: await ia.getItem(id) })
+  } catch (error: any) {
+    handleError(res, error)
+  }
+})
+
+router.get('/item/:id/task', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params
+
+    handleResponse(res, { status: 200, data: await ia.getItemTasks(id) })
   } catch (error: any) {
     handleError(res, error)
   }
