@@ -163,6 +163,13 @@ class InternetArchive {
     }
     return await this.httpClient.makeRequest(endpoints.deleteFile, { path, headers }) as any
   }
+
+  async getItemTasks(id: string): Promise<Item> {
+    const params = {
+      identifier: id,
+    }
+    return await this.httpClient.makeRequest(endpoints.getItemTasks, { params }) as any
+  }
 }
 
 export default InternetArchive
