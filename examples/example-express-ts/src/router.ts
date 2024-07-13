@@ -71,9 +71,11 @@ router.post(
         }
 
         /* fetch item and return as response */
-        const data = await ia.getItem(id)
-        data.id = id
-        data.uploads = files as any
+        const data = {
+          id,
+          metadata: item.metadata,
+          uploads: files,
+        }
 
         handleResponse(res, { status: 201, data })
       } else {

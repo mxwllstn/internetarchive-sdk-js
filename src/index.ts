@@ -66,6 +66,7 @@ class InternetArchive {
     /* extracts identifier from metadata */
     const { identifier } = metadata || {}
     /* required for updateItem */
+    metadata.collection = collection
     metadata.mediatype = mediatype
 
     const headers = {
@@ -82,11 +83,17 @@ class InternetArchive {
     })
 
     const id = identifier || generateItemIdFromMetadata(metadata)
+    metadata.identifier = id
 
     /* create document with metadata */
     await this.httpClient.makeRequest(endpoints.createItem, { path: id, headers }) as any
+    await this.updateItem(id, metadata)
 
-    return await this.updateItem(id, metadata)
+    /* returns id and metadata */
+    return {
+      id,
+      metadata,
+    }
   }
 
   async getItems(
