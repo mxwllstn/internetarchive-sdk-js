@@ -1,5 +1,6 @@
 import { randomBytes } from 'crypto'
 import slugify from 'slugify'
+import { ZodError } from 'zod'
 
 export function generateItemIdFromMetadata(metadata: Record<string, string>) {
   const uuid = randomBytes(8).toString('hex').toLowerCase()
@@ -17,4 +18,8 @@ export function generateItemIdFromMetadata(metadata: Record<string, string>) {
     strict: true,
     trim: true,
   })
+}
+
+export function parseZodErrorToString(err: ZodError) {
+  return err.issues.map((issue, idx) => `(${idx + 1})${issue.path?.[0]} - ${issue.message}`).join(', ')
 }
