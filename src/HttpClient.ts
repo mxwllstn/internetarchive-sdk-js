@@ -1,6 +1,9 @@
+import { z } from 'zod'
 import { type Endpoint } from './endpoints.js'
 import { IaModuleError, IaApiError } from './errors.js'
-import { IaOptions } from './index.js'
+import { IaOptions } from './schema.js'
+import { parseZodErrorToString } from './utils.js'
+export type IaOptions = z.infer<typeof IaOptions>
 
 interface RequestOptions {
   path?: string
@@ -14,7 +17,7 @@ class HttpClient {
   token: string
   options: IaOptions
   static default: typeof HttpClient
-  constructor(token: string, options: IaOptions) {
+  constructor(token: string, options: IaOptions = {}) {
     (this.token = token, this.options = options)
   }
 
@@ -33,6 +36,15 @@ class HttpClient {
     const headers = {
       ...(endpoint.auth && { authorization: `LOW ${this.token}` }),
       ...options?.headers,
+    }
+
+    try {
+      IaOptions.parse(this.options)
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const error = 'Invalid options args: ' + parseZodErrorToString(err)
+        throw new IaModuleError(error)
+      }
     }
 
     try {
@@ -56,8 +68,8 @@ class HttpClient {
             }
           : await response.json()
       }
-    } catch (error: any) {
-      throw new IaApiError(error?.cause?.message ?? error?.message, error.statusCode)
+    } catch (err: any) {
+      throw new IaApiError(err?.cause?.message ?? err?.message, err.statusCode)
     }
   }
 }
