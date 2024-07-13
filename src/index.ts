@@ -51,7 +51,7 @@ class InternetArchive {
     this.httpClient = new HttpClient(token, options)
   }
 
-  async createItem(collection: string, mediatype: Mediatype, metadata: Item): Promise<Item> {
+  async createItem(collection: string, mediatype: Mediatype, data: Item): Promise<Item> {
     if (!this.token) {
       throw new Error('api token required')
     }
@@ -61,6 +61,13 @@ class InternetArchive {
       )
     }
 
+    /* does not include audioFile and imageFile in metadata */
+    const { audioFile, imageFile, ...metadata } = data || {}
+    /* extracts identifier from metadata */
+    const { identifier } = metadata || {}
+    /* required for updateItem */
+    metadata.mediatype = mediatype
+
     const headers = {
       'x-amz-auto-make-bucket': 1,
       'x-archive-meta01-collection': collection,
@@ -68,17 +75,18 @@ class InternetArchive {
       'x-archive-meta-mediatype': mediatype,
     } as FileUploadHeaders
 
-    Object.keys(metadata).forEach((key) => {
+    Object.keys({ identifier, audioFile, imageFile }).forEach((key) => {
       if (metadata?.[key]) {
         headers[`x-archive-meta-${key}`] = String(metadata[key])
       }
     })
 
-    const id = metadata?.identifier || generateItemIdFromMetadata(metadata)
+    const id = identifier || generateItemIdFromMetadata(metadata)
 
     /* create document with metadata */
     await this.httpClient.makeRequest(endpoints.createItem, { path: id, headers }) as any
-    return { id, ...metadata }
+
+    return await this.updateItem(id, metadata)
   }
 
   async getItems(
