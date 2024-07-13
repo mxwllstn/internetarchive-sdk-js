@@ -23,13 +23,14 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run build-clean && npm run build-esm && npm run build-cjs",
+    "build": "npm run build-clean && npm run build-esm && npm run build-cjs && npm run update-package-info",
     "build-clean": "rm -rf dist",
     "build-esm": "npx tsc",
-    "build-cjs": "npx rollup dist/index.js --file dist/index.cjs --format cjs --external fs,crypto,slugify,qs",
+    "build-cjs": "npx rollup dist/index.js --file dist/index.cjs -p @rollup/plugin-json --format cjs --external fs,crypto,slugify,qs,zod",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
-    "prepublish": "npm run lint && npm run build"
+    "prepublish": "npm run lint && npm run build",
+    "update-package-info": "echo '{\n  \"name\": \"'$npm_package_name'\",\n  \"version\": \"'$npm_package_version'\"\n}' > ./src/package-info.json"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.5.0",
+    "@rollup/plugin-json": "^6.1.0",
     "@stylistic/eslint-plugin": "^2.3.0",
     "@types/node": "^20.14.9",
     "@types/qs": "^6.9.15",
@@ -50,7 +52,8 @@
     "rollup": "^4.18.0",
     "tsx": "^4.15.7",
     "typescript": "^5.5.2",
-    "typescript-eslint": "^7.14.1"
+    "typescript-eslint": "^7.14.1",
+    "zod": "^3.23.8"
   },
   "engines": {
     "node": ">=18"
