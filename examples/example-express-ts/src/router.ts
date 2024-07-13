@@ -5,7 +5,7 @@ import fs from 'node:fs/promises'
 import { tmpdir } from 'os'
 
 const { IA_TOKEN } = process.env || {}
-const ia = new InternetArchive((IA_TOKEN as string), { testmode: true })
+const ia = new InternetArchive((IA_TOKEN as string), { testmode: true, setScanner: true })
 
 const router = express.Router() as Router
 
@@ -81,8 +81,8 @@ router.post(
       } else {
         throw new Error('no files attached')
       }
-    } catch (error: any) {
-      handleError(res, error)
+    } catch (err: any) {
+      handleError(res, err)
     }
   },
 )
@@ -97,8 +97,8 @@ router.put('/item/:id', async (req: Request, res: Response): Promise<void> => {
       : req.body
 
     handleResponse(res, { status: 200, data: await ia.updateItem(id, metadata) })
-  } catch (error: any) {
-    handleError(res, error)
+  } catch (err: any) {
+    handleError(res, err)
   }
 })
 
@@ -118,8 +118,8 @@ router.get('/item', async (req: Request, res: Response): Promise<void> => {
     const { filters, options } = payload || {}
 
     handleResponse(res, { status: 200, data: await ia.getItems(filters, options) })
-  } catch (error: any) {
-    handleError(res, error)
+  } catch (err: any) {
+    handleError(res, err)
   }
 })
 
@@ -128,8 +128,8 @@ router.get('/item/:id', async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params
 
     handleResponse(res, { status: 200, data: await ia.getItem(id) })
-  } catch (error: any) {
-    handleError(res, error)
+  } catch (err: any) {
+    handleError(res, err)
   }
 })
 
@@ -138,8 +138,8 @@ router.get('/item/:id/task', async (req: Request, res: Response): Promise<void> 
     const { id } = req.params
 
     handleResponse(res, { status: 200, data: await ia.getItemTasks(id) })
-  } catch (error: any) {
-    handleError(res, error)
+  } catch (err: any) {
+    handleError(res, err)
   }
 })
 

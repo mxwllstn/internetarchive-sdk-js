@@ -1,8 +1,11 @@
 import fs from 'fs'
 import qs from 'qs'
+import { z } from 'zod'
 import HttpClient from './HttpClient.js'
 import endpoints from './endpoints.js'
+import packageInfo from './package-info.json'
 import { generateItemIdFromMetadata } from './utils.js'
+import { IaOptions } from './schema.js'
 
 export type Mediatype = 'audio' | 'collection' | 'data' | 'etree' | 'image' | 'movies' | 'software' | 'texts' | 'web'
 export type Id = string | number | boolean
@@ -27,9 +30,7 @@ export interface ItemsResponse {
   response: { docs: Item[] }
 }
 
-export interface IaOptions {
-  testmode?: boolean
-}
+export type IaOptions = z.infer<typeof IaOptions>
 
 export interface TaskCriteria {
   task_id?: number
@@ -41,14 +42,23 @@ export interface TaskCriteria {
   wait_admin?: number
 }
 
+const defaultIaOptions = {
+  testmode: false,
+  setScanner: true,
+}
+
 class InternetArchive {
   token?: string
   options?: IaOptions
   httpClient: HttpClient
   static default: typeof InternetArchive
   constructor(token: string, options: IaOptions = {}) {
-    (this.token = token), (this.options = options)
-    this.httpClient = new HttpClient(token, options)
+    this.token = token
+    this.options = {
+      testmode: options?.testmode ?? defaultIaOptions.testmode,
+      setScanner: options?.setScanner ?? defaultIaOptions.setScanner,
+    }
+    this.httpClient = new HttpClient(token, this.options)
   }
 
   async createItem(collection: string, mediatype: Mediatype, data: Item): Promise<Item> {
@@ -74,6 +84,7 @@ class InternetArchive {
       'x-archive-meta01-collection': collection,
       ...(this.options?.testmode && { 'x-archive-meta02-collection': 'test_collection' }),
       'x-archive-meta-mediatype': mediatype,
+      ...(this.options?.setScanner && { 'x-archive-meta-mediatype': `${packageInfo.name}-${packageInfo.version}` }),
     } as FileUploadHeaders
 
     Object.keys({ identifier, audioFile, imageFile }).forEach((key) => {
@@ -140,6 +151,10 @@ class InternetArchive {
     if (!this.token) {
       throw new Error('api token required')
     }
+    if (this.options?.setScanner) {
+      metadata.scanner = `${packageInfo.name}-${packageInfo.version}`
+    }
+
     const patch = Object.keys(metadata).map((key) => {
       return {
         op: 'add',
