@@ -52,7 +52,7 @@ void (async () => {
     const response = await ia.updateItem(itemId, { title: 'new title' })
     console.log(response)
   } catch (err) {
-    console.log(err.response.data)
+    console.log(err.message)
   }
 })()
 ```
