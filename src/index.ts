@@ -3,7 +3,7 @@ import qs from 'qs'
 import { z } from 'zod'
 import HttpClient from './HttpClient.js'
 import endpoints from './endpoints.js'
-import packageInfo from './package-info.json'
+import packageInfo from './package-info.json' assert { type: 'json' }
 import { generateItemIdFromMetadata } from './utils.js'
 import { IaOptions } from './schema.js'
 
