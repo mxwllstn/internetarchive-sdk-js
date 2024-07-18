@@ -14,10 +14,10 @@ interface RequestOptions {
 }
 
 class HttpClient {
-  token: string
+  token?: string | null
   options: IaOptions
   static default: typeof HttpClient
-  constructor(token: string, options: IaOptions = {}) {
+  constructor(token?: string | null, options: IaOptions = {}) {
     (this.token = token, this.options = options)
   }
 

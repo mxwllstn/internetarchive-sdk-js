@@ -29,6 +29,7 @@
     "build-cjs": "npx rollup dist/index.js --file dist/index.cjs -p @rollup/plugin-json --format cjs --external fs,crypto,slugify,qs,zod",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
+    "test": "vitest run",
     "prepublish": "npm run lint && npm run build",
     "update-package-info": "echo '{\n  \"name\": \"'$npm_package_name'\",\n  \"version\": \"'$npm_package_version'\"\n}' > ./src/package-info.json"
   },
@@ -53,6 +54,7 @@
     "tsx": "^4.15.7",
     "typescript": "^5.5.2",
     "typescript-eslint": "^7.14.1",
+    "vitest": "^2.0.3",
     "zod": "^3.23.8"
   },
   "engines": {
