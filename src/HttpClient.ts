@@ -1,9 +1,12 @@
-import { z } from 'zod'
+import { ZodError } from 'zod'
+import qs from 'qs'
 import { type Endpoint } from './endpoints.js'
 import { IaModuleError, IaApiError } from './errors.js'
-import { IaOptions } from './schema.js'
 import { parseZodErrorToString } from './utils.js'
-export type IaOptions = z.infer<typeof IaOptions>
+import { IaOptions } from './types.js'
+import * as schema from './schema.js'
+
+const { ia } = schema
 
 interface RequestOptions {
   path?: string
@@ -39,9 +42,9 @@ class HttpClient {
     }
 
     try {
-      IaOptions.parse(this.options)
+      ia.Options.parse(this.options)
     } catch (err) {
-      if (err instanceof z.ZodError) {
+      if (err instanceof ZodError) {
         const error = 'Invalid options args: ' + parseZodErrorToString(err)
         throw new IaModuleError(error)
       }
@@ -52,14 +55,29 @@ class HttpClient {
         throw new IaModuleError('Cannot pass data and body data at the same time.')
       }
 
+      if (endpoint?.schema) {
+        try {
+          endpoint.schema.type === 'headers' && schema?.[endpoint.schema.name].parse(headers)
+          endpoint.schema.type === 'data' && schema?.[endpoint.schema.name].parse(data)
+          endpoint.schema.type === 'qs' && schema?.[endpoint.schema.name].parse(data)
+          endpoint.schema.type === 'body' && schema?.[endpoint.schema.name].parse(body)
+        } catch (err) {
+          if (err instanceof ZodError) {
+            console.error(err)
+            const error = `Invalid ${endpoint.schema.name} - ${parseZodErrorToString(err)}`
+            throw new IaModuleError(error)
+          }
+        }
+      }
+
       const response = await fetch(apiUrl, {
         headers,
         method: endpoint.method,
         ...(body && { body: JSON.stringify(body) }),
-        ...(data && { body: data }),
+        ...(data && { body: endpoint.schema.type === 'qs' ? qs.stringify(data) : data }),
       })
       if (!response.ok) {
-        const message = response.status === 403 ? 'archive.org token is incorrect.' : endpoint?.emptyBody ? response.statusText : JSON.parse(await response.text())?.error || response.statusText
+        const message = response.status === 403 ? 'archive.org token is incorrect or you do not have access to this collection.' : endpoint?.emptyBody ? response.statusText : JSON.parse(await response.text())?.error || response.statusText
         throw new IaApiError(message, response.status)
       } else {
         return endpoint?.emptyBody
