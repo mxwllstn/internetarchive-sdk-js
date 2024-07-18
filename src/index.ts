@@ -48,12 +48,12 @@ const defaultIaOptions = {
 }
 
 class InternetArchive {
-  token?: string
+  token?: string | null
   options?: IaOptions
   httpClient: HttpClient
   static default: typeof InternetArchive
-  constructor(token: string, options: IaOptions = {}) {
-    this.token = token
+  constructor(token?: string, options: IaOptions = {}) {
+    this.token = token ?? null
     this.options = {
       testmode: options?.testmode ?? defaultIaOptions.testmode,
       setScanner: options?.setScanner ?? defaultIaOptions.setScanner,
