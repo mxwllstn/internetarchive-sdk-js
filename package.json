@@ -31,7 +31,8 @@
     "lint:fix": "npx eslint --fix .",
     "test": "vitest run",
     "prepublish": "npm run lint && npm run build",
-    "update-package-info": "echo '{\n  \"name\": \"'$npm_package_name'\",\n  \"version\": \"'$npm_package_version'\"\n}' > ./src/package-info.json"
+    "update-package-info": "echo '{\n  \"name\": \"'$npm_package_name'\",\n  \"version\": \"'$npm_package_version'\"\n}' > ./src/package-info.json",
+    "release": "npm run lint && npm run build && npm run test && changelogen --release && npm publish && git push --follow-tags"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,7 @@
     "@stylistic/eslint-plugin": "^2.3.0",
     "@types/node": "^20.14.9",
     "@types/qs": "^6.9.15",
+    "changelogen": "^0.5.5",
     "eslint": "^8.57.0",
     "globals": "^15.6.0",
     "lint-staged": "^15.2.7",
