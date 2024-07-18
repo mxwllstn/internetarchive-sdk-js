@@ -1,46 +1,10 @@
 import fs from 'fs'
-import qs from 'qs'
-import { z } from 'zod'
 import HttpClient from './HttpClient.js'
 import endpoints from './endpoints.js'
 import packageInfo from './package-info.json' assert { type: 'json' }
-import { generateItemIdFromMetadata } from './utils.js'
-import { IaOptions } from './schema.js'
-
-export type Mediatype = 'audio' | 'collection' | 'data' | 'etree' | 'image' | 'movies' | 'software' | 'texts' | 'web'
-export type Id = string | number | boolean
-export type Item = Record<string, any>
-export type List = Item[]
-
-export interface FileUploadHeaders {
-  'authorization': string
-  'x-amz-auto-make-bucket': number
-  'x-archive-meta01-collection': string | number
-  'x-archive-meta02-collection'?: string | number
-  'x-archive-meta-mediatype': Mediatype
-  [key: `x-archive-meta-${string}`]: string | number
-}
-export interface FileUpload {
-  filename: string
-  path?: string | undefined
-  data?: Buffer | undefined
-}
-
-export interface ItemsResponse {
-  response: { docs: Item[] }
-}
-
-export type IaOptions = z.infer<typeof IaOptions>
-
-export interface TaskCriteria {
-  task_id?: number
-  server?: string
-  cmd?: string
-  args?: string
-  submitter?: string
-  priority?: number
-  wait_admin?: number
-}
+import { type IaOptions, CreateItemParams, CreateItemRequestHeaders, CreateItemResponse, GetItemParams, UpdateItemParams, UpdateItemRequestPatch, UpdateItemRequestData, UpdateItemResponse, GetItemsResponse, GetItemResponse, UploadFileParams, UploadFileHeaders, GetItemTasksResponse, TaskCriteria } from './types.js'
+import { isASCII } from './utils'
+export * from './types'
 
 const defaultIaOptions = {
   testmode: false,
@@ -61,59 +25,51 @@ class InternetArchive {
     this.httpClient = new HttpClient(token, this.options)
   }
 
-  async createItem(collection: string, mediatype: Mediatype, data: Item): Promise<Item> {
-    if (!this.token) {
-      throw new Error('api token required')
-    }
-    if (!mediatype) {
-      throw new Error(
-        'mediatype must be specified. possible mediatypes include: audio, collection, data, etree, image, movies, software, texts, web',
-      )
-    }
-
-    /* does not include audioFile and imageFile in metadata */
-    const { audioFile, imageFile, ...metadata } = data || {}
-    /* extracts identifier from metadata */
-    const { identifier } = metadata || {}
-    /* required for updateItem */
-    metadata.collection = collection
-    metadata.mediatype = mediatype
+  async createItem({ identifier, collection, mediatype, upload, metadata }: CreateItemParams): Promise<CreateItemResponse> {
+    const isTestCollection = this.options?.testmode ?? collection === 'test_collection'
 
     const headers = {
       'x-amz-auto-make-bucket': 1,
-      'x-archive-meta01-collection': collection,
-      ...(this.options?.testmode && { 'x-archive-meta02-collection': 'test_collection' }),
+      'x-archive-interactive-priority': 1,
+      'x-archive-meta-identifier': identifier,
       'x-archive-meta-mediatype': mediatype,
-      ...(this.options?.setScanner && { 'x-archive-meta-mediatype': `${packageInfo.name}-${packageInfo.version}` }),
-    } as FileUploadHeaders
+      ...(isTestCollection && collection !== 'test_collection' ? { 'x-archive-meta01-collection': collection, 'x-archive-meta02-collection': 'test_collection' } : { 'x-archive-meta-collection': collection }),
+      ...(this.options?.setScanner && { 'x-archive-meta-scanner': `${packageInfo.name}-${packageInfo.version}` }),
+    } as CreateItemRequestHeaders
 
-    Object.keys({ identifier, audioFile, imageFile }).forEach((key) => {
-      if (metadata?.[key]) {
-        headers[`x-archive-meta-${key}`] = String(metadata[key])
-      }
-    })
+    if (metadata && Object.keys(metadata).length) {
+      Object.entries(metadata).forEach(([key, val]) => {
+        /* returns error if item create contains ascii characters */
+        if (!isASCII(val as string)) {
+          throw new Error(`Metadata values cannot exist on Item Create requests ASCII characters. Field <${key}> contains value '${val}'.`)
+        }
+        headers[`x-archive-meta-${key}`] = val
+      })
+    }
 
-    const id = identifier || generateItemIdFromMetadata(metadata)
-    metadata.identifier = id
+    const data = upload?.data ? upload?.data : upload?.path ? fs.readFileSync(upload.path) : null
 
-    /* create document with metadata */
-    await this.httpClient.makeRequest(endpoints.createItem, { path: id, headers }) as any
-    await this.updateItem(id, metadata)
+    const path = upload?.filename ? `${identifier}/${upload?.filename}` : identifier
+
+    await this.httpClient.makeRequest(endpoints.createItem, { data, path, headers }) as any
 
     /* returns id and metadata */
     return {
-      id,
+      identifier,
       metadata,
-    }
+      ...(upload && {
+        upload: {
+          filename: upload.filename,
+          path,
+        },
+      }),
+    } as CreateItemResponse
   }
 
-  async getItems(
-    filters: { collection?: string, subject?: string, creator?: string },
-    options: {
-      fields?: string
-      rows?: string
-    },
-  ): Promise<ItemsResponse> {
+  async getItems({
+    filters,
+    options,
+  }: GetItemParams): Promise<GetItemsResponse> {
     const { fields, rows } = options || {}
     const params = {
       'q':
@@ -143,50 +99,39 @@ class InternetArchive {
     return await this.httpClient.makeRequest(endpoints.getItems, { params }) as any
   }
 
-  async getItem(id: string): Promise<Item> {
+  async getItem(id: string): Promise<GetItemResponse> {
     return await this.httpClient.makeRequest(endpoints.getItem, { path: id }) as any
   }
 
-  async updateItem(id: string, metadata: Item): Promise<Item> {
-    if (!this.token) {
-      throw new Error('api token required')
-    }
+  async updateItem(identifier: string, metadata: UpdateItemParams): Promise<UpdateItemResponse> {
     if (this.options?.setScanner) {
       metadata.scanner = `${packageInfo.name}-${packageInfo.version}`
     }
-
     const patch = Object.keys(metadata).map((key) => {
       return {
         op: 'add',
         path: `/${key}`,
         value: metadata[key],
-      }
+      } as UpdateItemRequestPatch
     })
     const data = {
       '-target': 'metadata',
       '-patch': patch,
-      'access': this.token.split(':')[0],
-      'secret': this.token.split(':')[1],
-    }
+    } as UpdateItemRequestData
+
     const headers = {
       'content-type': 'application/x-www-form-urlencoded;',
     }
-    return await this.httpClient.makeRequest(endpoints.updateItem, { path: id, data: qs.stringify(data), headers }) as any
+    return await this.httpClient.makeRequest(endpoints.updateItem, { path: identifier, data, headers }) as any
   }
 
-  async uploadFiles(files: FileUpload[] | { path: string, filename: string }[], id: string): Promise<void> {
-    await Promise.all(
-      files.filter(x => x).map(async (file) => {
-        await this.uploadFile(file, id)
-      }),
-    )
-  }
-
-  async uploadFile(file: FileUpload, id: string): Promise<void> {
+  async uploadFile({ identifier, mediatype, file }: UploadFileParams): Promise<void> {
     const { path, filename, data: buffer } = file || {}
     const headers = {
       'x-archive-interactive-priority': 1,
-    }
+      'x-archive-meta-mediatype': mediatype,
+    } as UploadFileHeaders
+
     if (!filename) {
       throw new Error('filename required')
     }
@@ -194,7 +139,7 @@ class InternetArchive {
     if (!data) {
       throw new Error('buffer or path required')
     }
-    return await this.httpClient.makeRequest(endpoints.uploadFile, { data, path: `${id}/${filename}`, headers }) as any
+    return await this.httpClient.makeRequest(endpoints.uploadFile, { data, path: `${identifier}/${filename}`, headers }) as any
   }
 
   async deleteFile(path: string): Promise<void> {
@@ -204,12 +149,12 @@ class InternetArchive {
     return await this.httpClient.makeRequest(endpoints.deleteFile, { path, headers }) as any
   }
 
-  async getItemTasks(id: string, criteria?: TaskCriteria): Promise<Item> {
+  async getItemTasks(id: string, criteria?: TaskCriteria): Promise<GetItemTasksResponse> {
     const params = {
       identifier: id,
       ...criteria,
     }
-    return await this.httpClient.makeRequest(endpoints.getItemTasks, { params }) as any
+    return await this.httpClient.makeRequest(endpoints.getTask, { params }) as any
   }
 }
 
