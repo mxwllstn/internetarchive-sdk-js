@@ -26,7 +26,7 @@
     "build": "npm run build-clean && npm run build-esm && npm run build-cjs",
     "build-clean": "rm -rf dist",
     "build-esm": "npx tsc",
-    "build-cjs": "npx rollup dist/index.js --file dist/index.cjs -p @rollup/plugin-json --format cjs --external fs,crypto,slugify,qs,zod",
+    "build-cjs": "npx rollup dist/index.js --file dist/index.cjs -p @rollup/plugin-json --format cjs --external fs,crypto,slugify,qs,zod,pkg-types",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "test": "vitest run",
