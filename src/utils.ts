@@ -1,6 +1,15 @@
+import { readPackageJSON } from 'pkg-types'
 import { randomBytes } from 'crypto'
 import slugify from 'slugify'
 import { z, type RefinementCtx } from 'zod'
+
+export async function getPackageInfo() {
+  try {
+    return await readPackageJSON('node_modules/internetarchive-sdk-js/package.json')
+  } catch {
+    return null
+  }
+}
 
 export function generateItemIdFromMetadata(metadata: Record<string, string>) {
   const uuid = randomBytes(8).toString('hex').toLowerCase()

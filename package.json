@@ -23,7 +23,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run build-clean && npm run build-esm && npm run build-cjs && npm run update-package-info",
+    "build": "npm run build-clean && npm run build-esm && npm run build-cjs",
     "build-clean": "rm -rf dist",
     "build-esm": "npx tsc",
     "build-cjs": "npx rollup dist/index.js --file dist/index.cjs -p @rollup/plugin-json --format cjs --external fs,crypto,slugify,qs,zod",
@@ -31,7 +31,6 @@
     "lint:fix": "npx eslint --fix .",
     "test": "vitest run",
     "prepublish": "npm run lint && npm run build",
-    "update-package-info": "echo '{\n  \"name\": \"'$npm_package_name'\",\n  \"version\": \"'$npm_package_version'\"\n}' > ./src/package-info.json",
     "release": "npm run lint && npm run build && npm run test && changelogen --release && npm publish && git push --follow-tags"
   },
   "repository": {
@@ -39,6 +38,7 @@
     "url": "https://github.com/mxwllstn/internetarchive-sdk-js"
   },
   "dependencies": {
+    "pkg-types": "^1.1.3",
     "qs": "^6.12.1",
     "slugify": "^1.6.6"
   },
