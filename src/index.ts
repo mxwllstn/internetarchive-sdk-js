@@ -36,8 +36,6 @@ class InternetArchive {
       ...(this.options?.setScanner && packageInfo && { 'x-archive-meta-scanner': `${packageInfo.name}-${packageInfo.version}` }),
     } as CreateItemRequestHeaders
 
-    console.log({ headers })
-
     if (metadata && Object.keys(metadata).length) {
       /* filters out identifier, mediatype, or collection from metadata */
       Object.entries(metadata).filter(([key, _val]) => !['identifier', 'mediatype', 'collection', 'scanner'].includes(key)).forEach(([key, val]) => {
