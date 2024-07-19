@@ -1,7 +1,8 @@
 import express, { Router, Request, Response } from 'express'
-import InternetArchive, { Mediatype, Item } from 'internetarchive-sdk-js'
+import InternetArchive, { Mediatype } from 'internetarchive-sdk-js'
 import multer from 'multer'
 import fs from 'node:fs/promises'
+import { randomBytes } from 'crypto'
 import { tmpdir } from 'os'
 
 const { IA_TOKEN } = process.env || {}
@@ -23,7 +24,7 @@ const upload = multer({ storage })
 
 export interface ApiResponse {
   status: number
-  data: Item
+  data: Record<string, any>
 }
 
 function handleResponse(res: Response, response: ApiResponse) {
@@ -44,15 +45,15 @@ router.post(
     try {
       /* check for uploaded file */
       if (req.files && Object.keys(req.files).length > 0) {
-        const { upload: upload } = req.files as Record<string, Express.Multer.File[]>
+        const { upload: uploads } = req.files as Record<string, Express.Multer.File[]>
+        const upload = uploads[0]
         if (!upload) {
           throw new Error('no file attached')
         }
 
         /* create item with requested metadata */
-        const { mediatype } = req.params || {}
+        const mediatype = req.params.mediatype as Mediatype
         const body = req.body
-        console.log({ body })
         const { subject, description } = body || {}
         const collection = body?.collection || 'opensource_image'
         const metadata = {
@@ -60,22 +61,12 @@ router.post(
           ...(subject && { subject }),
           ...(description && { description }),
         }
-        const item = await ia.createItem(collection, mediatype as Mediatype || 'data', metadata)
-        console.log({ item })
-        const id = item.id as string
-
-        /* upload files to document bucket */
-        const files = [...upload]
-        if (files?.length) {
-          await ia.uploadFiles(files, id)
-        }
+        const uuid = randomBytes(8).toString('hex').toLowerCase()
+        const identifier = 'test' + uuid
+        const item = await ia.createItem({ identifier, collection, mediatype, upload, metadata })
 
         /* fetch item and return as response */
-        const data = {
-          id,
-          metadata: item.metadata,
-          uploads: files,
-        }
+        const data = item
 
         handleResponse(res, { status: 201, data })
       } else {
@@ -87,16 +78,16 @@ router.post(
   },
 )
 
-router.put('/item/:id', async (req: Request, res: Response): Promise<void> => {
+router.put('/item/:identifier', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params
+    const { identifier } = req.params
     const metadata = Object.keys(req.body).length === 0
       ? {
           title: 'test title',
         }
       : req.body
 
-    handleResponse(res, { status: 200, data: await ia.updateItem(id, metadata) })
+    handleResponse(res, { status: 200, data: await ia.updateItem(identifier, metadata) })
   } catch (err: any) {
     handleError(res, err)
   }
@@ -117,7 +108,7 @@ router.get('/item', async (req: Request, res: Response): Promise<void> => {
       : req.body
     const { filters, options } = payload || {}
 
-    handleResponse(res, { status: 200, data: await ia.getItems(filters, options) })
+    handleResponse(res, { status: 200, data: await ia.getItems({ filters, options }) })
   } catch (err: any) {
     handleError(res, err)
   }
