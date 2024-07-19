@@ -31,7 +31,7 @@
     "lint:fix": "npx eslint --fix .",
     "test": "vitest run",
     "prepublish": "npm run lint && npm run build",
-    "release": "npm run lint && npm run build && npm run test && changelogen --release && npm publish && git push --follow-tags"
+    "release": "npm run lint && npm run build && npm run test && changelogen --release --push && npm publish"
   },
   "repository": {
     "type": "git",
