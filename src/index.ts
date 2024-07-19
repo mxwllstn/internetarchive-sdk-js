@@ -1,9 +1,8 @@
 import fs from 'fs'
 import HttpClient from './HttpClient.js'
 import endpoints from './endpoints.js'
-import packageInfo from './package-info.json' assert { type: 'json' }
 import { type IaOptions, CreateItemParams, CreateItemRequestHeaders, CreateItemResponse, GetItemParams, UpdateItemParams, UpdateItemRequestPatch, UpdateItemRequestData, UpdateItemResponse, GetItemsResponse, GetItemResponse, UploadFileParams, UploadFileHeaders, GetItemTasksResponse, TaskCriteria } from './types.js'
-import { isASCII } from './utils'
+import { isASCII, getPackageInfo } from './utils'
 export * from './types'
 
 const defaultIaOptions = {
@@ -26,16 +25,18 @@ class InternetArchive {
   }
 
   async createItem({ identifier, collection, mediatype, upload, metadata }: CreateItemParams): Promise<CreateItemResponse> {
+    const packageInfo = await getPackageInfo()
     const isTestCollection = this.options?.testmode ?? collection === 'test_collection'
-
     const headers = {
       'x-amz-auto-make-bucket': 1,
       'x-archive-interactive-priority': 1,
       'x-archive-meta-identifier': identifier,
       'x-archive-meta-mediatype': mediatype,
       ...(isTestCollection && collection !== 'test_collection' ? { 'x-archive-meta01-collection': collection, 'x-archive-meta02-collection': 'test_collection' } : { 'x-archive-meta-collection': collection }),
-      ...(this.options?.setScanner && { 'x-archive-meta-scanner': `${packageInfo.name}-${packageInfo.version}` }),
+      ...(this.options?.setScanner && packageInfo && { 'x-archive-meta-scanner': `${packageInfo.name}-${packageInfo.version}` }),
     } as CreateItemRequestHeaders
+
+    console.log({ headers })
 
     if (metadata && Object.keys(metadata).length) {
       /* filters out identifier, mediatype, or collection from metadata */
@@ -105,7 +106,8 @@ class InternetArchive {
   }
 
   async updateItem(identifier: string, metadata: UpdateItemParams): Promise<UpdateItemResponse> {
-    if (this.options?.setScanner) {
+    const packageInfo = await getPackageInfo()
+    if (this.options?.setScanner && packageInfo) {
       metadata.scanner = `${packageInfo.name}-${packageInfo.version}`
     }
     const patch = Object.keys(metadata).map((key) => {
