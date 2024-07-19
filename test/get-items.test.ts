@@ -11,7 +11,7 @@ test('get items', async () => {
     rows: '10',
     fields: 'identifier',
   }
-  const { response } = await ia.getItems(filters, options) as any || {}
+  const { response } = await ia.getItems({ filters, options }) as any || {}
 
   expect(response.numFound).toBeGreaterThan(1)
 })
