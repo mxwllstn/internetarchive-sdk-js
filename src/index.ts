@@ -38,10 +38,11 @@ class InternetArchive {
     } as CreateItemRequestHeaders
 
     if (metadata && Object.keys(metadata).length) {
-      Object.entries(metadata).forEach(([key, val]) => {
+      /* filters out identifier, mediatype, or collection from metadata */
+      Object.entries(metadata).filter(([key, _val]) => !['identifier', 'mediatype', 'collection', 'scanner'].includes(key)).forEach(([key, val]) => {
         /* returns error if item create contains ascii characters */
-        if (!isASCII(val as string)) {
-          throw new Error(`Metadata values cannot exist on Item Create requests ASCII characters. Field <${key}> contains value '${val}'.`)
+        if (val !== '' && !isASCII(val as string)) {
+          throw new Error(`Metadata values cannot include ASCII characters on Item Create requests. Field <${key}> contains value '${val}'.`)
         }
         headers[`x-archive-meta-${key}`] = val
       })
