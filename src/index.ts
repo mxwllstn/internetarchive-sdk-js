@@ -2,8 +2,8 @@ import fs from 'fs'
 import HttpClient from './HttpClient.js'
 import endpoints from './endpoints.js'
 import { type IaOptions, CreateItemParams, CreateItemRequestHeaders, CreateItemResponse, GetItemParams, UpdateItemParams, UpdateItemRequestPatch, UpdateItemRequestData, UpdateItemResponse, GetItemsResponse, GetItemResponse, UploadFileParams, UploadFileHeaders, GetItemTasksResponse, TaskCriteria } from './types.js'
-import { isASCII, getPackageInfo } from './utils'
-export * from './types'
+import { isASCII, getPackageInfo } from './utils.js'
+export * from './types.js'
 
 const defaultIaOptions = {
   testmode: false,
