@@ -5,7 +5,7 @@ import { z, type RefinementCtx } from 'zod'
 
 export async function getPackageInfo() {
   try {
-    return await readPackageJSON('node_modules/internetarchive-sdk-js/package.json')
+    return await readPackageJSON('./node_modules/internetarchive-sdk-js/package.json')
   } catch {
     return null
   }
