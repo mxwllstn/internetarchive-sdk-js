@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v1.0.36
+
+[compare changes](https://github.com/mxwllstn/internetarchive-sdk-js/compare/v1.0.35...v1.0.36)
+
 ## v1.0.35
 
 [compare changes](https://github.com/mxwllstn/internetarchive-sdk-js/compare/v1.0.34...v1.0.35)
