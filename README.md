@@ -20,6 +20,9 @@ Or use `yarn` to install the module
 yarn add internetarchive-sdk-js
 ```
 
+## Library Documentation
+https://mxwllstn.github.io/internetarchive-sdk-js/classes/InternetArchive.html
+
 ## Usage
 ### Get Items
 ```javascript
