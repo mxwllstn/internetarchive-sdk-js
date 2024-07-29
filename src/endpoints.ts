@@ -14,7 +14,9 @@ export interface Endpoint {
 }
 
 export default {
-  /* ias3 Internet archive S3-like API - https://archive.org/developers/ias3.html */
+  /**
+   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   */
   createItem: {
     method: 'PUT',
     baseUrl: 'https://s3.us.archive.org',
@@ -26,13 +28,18 @@ export default {
     emptyBody: true,
   } as Endpoint,
 
-  /* Item Metadata API - https://archive.org/developers/metadata.html */
+  /**
+   * @see {@link https://archive.org/developers/metadata.html| Archive.org - Item Metadata API API}
+   */
   getItem: {
     method: 'GET',
     baseUrl: 'https://archive.org/metadata',
     auth: false,
   } as Endpoint,
 
+  /**
+   * @see {@link https://archive.org/developers/metadata.html| Archive.org - Item Metadata API API}
+   */
   updateItem: {
     method: 'POST',
     baseUrl: 'https://archive.org/metadata',
@@ -43,14 +50,18 @@ export default {
     auth: true,
   } as Endpoint,
 
-  /* Advanced Search API - https://archive.org/advancedsearch.php */
+  /**
+   * @see {@link https://archive.org/advancedsearch.php| Archive.org - Advanced Search API}
+   */
   getItems: {
     method: 'GET',
     baseUrl: 'https://archive.org/advancedsearch.php',
     auth: false,
   } as Endpoint,
 
-  /* ias3 Internet archive S3-like API - https://archive.org/developers/ias3.html */
+  /**
+   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   */
   uploadFile: {
     method: 'PUT',
     baseUrl: 'http://s3.us.archive.org',
@@ -62,6 +73,9 @@ export default {
     emptyBody: true,
   } as Endpoint,
 
+  /**
+   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   */
   deleteFile: {
     method: 'DELETE',
     baseUrl: 'http://s3.us.archive.org',
@@ -69,7 +83,9 @@ export default {
     emptyBody: true,
   } as Endpoint,
 
-  /* Tasks API - https://archive.org/developers/tasks.html */
+  /**
+   * @see {@link https://archive.org/developers/tasks.html| Archive.org - Tasks API}
+   */
   getTask: {
     method: 'GET',
     baseUrl: 'https://archive.org/services/tasks.php',

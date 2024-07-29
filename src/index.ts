@@ -1,7 +1,7 @@
 import fs from 'fs'
 import HttpClient from './HttpClient.js'
 import endpoints from './endpoints.js'
-import { type IaOptions, CreateItemParams, CreateItemRequestHeaders, CreateItemResponse, GetItemParams, UpdateItemParams, UpdateItemRequestPatch, UpdateItemRequestData, UpdateItemResponse, GetItemsResponse, GetItemResponse, UploadFileParams, UploadFileHeaders, GetItemTasksResponse, TaskCriteria } from './types.js'
+import { type IaOptions, CreateItemRequestHeaders, Mediatype, FileUpload, CreateItemResponse, UpdateItemParams, UpdateItemRequestPatch, UpdateItemRequestData, UpdateItemResponse, GetItemResponse, UploadFileParams, UploadFileHeaders, GetItemTasksResponse, TaskCriteria, GetItemsResponse, GetItemsParams, CreateItemParams } from './types.js'
 import { isASCII, getPackageInfo } from './utils.js'
 export * from './types.js'
 
@@ -10,11 +10,25 @@ const defaultIaOptions = {
   setScanner: true,
 }
 
+/**
+ * Provides access to Internet Archive APIs through methods
+ *
+ */
 class InternetArchive {
   token?: string | null
   options?: IaOptions
   httpClient: HttpClient
   static default: typeof InternetArchive
+  /**
+   * Provides access to Internet Archive APIs through methods
+   *
+   * @param token - {@link https://archive.org/developers/tutorial-get-ia-credentials.html| S3-like API Key} formatted as "accesskey:secretkey" (required for all methods except getItem or getItems)
+   * @param options - InternetArchive API options
+   * @param options.testmode - Option to add item to {@link https://archive.org/details/test_collection| Test Collection} (auto deletes in 30 days) - default FALSE
+   * @param options.setScanner - option to add scanner metadata for internetarchive-sdk-js - default TRUE
+   * @see {@link https://archive.org/developers/tutorial-get-ia-credentials.html| Archive.org - Get your Internet Archive credentials}
+   * @see {@link https://archive.org/details/test_collection| Archive.org - Test Collection}
+   */
   constructor(token?: string, options: IaOptions = {}) {
     this.token = token ?? null
     this.options = {
@@ -24,7 +38,27 @@ class InternetArchive {
     this.httpClient = new HttpClient(token, this.options)
   }
 
-  async createItem({ identifier, collection, mediatype, upload, metadata }: CreateItemParams): Promise<CreateItemResponse> {
+  /**
+   * Creates an Item in a Collection (Uploads a file and adds metadata).
+   *
+   * @param item - identifier, collection, mediatype, upload, metadata.
+   * @param item.identifier - The unique identifier for the item.
+   * @param item.collection - The collection that the item belongs to.
+   * @param item.mediatype - The item mediatype.
+   * @param item.upload - The item upload.
+   * @param item.metadata - The item metadata (optional).
+   * @returns The item identifier, metadata, and upload filename.
+   *
+   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   */
+  async createItem(item: {
+    identifier: string
+    collection: string
+    mediatype: Mediatype
+    upload: FileUpload
+    metadata?: Record<string, unknown>
+  }): Promise<CreateItemResponse> {
+    const { identifier, collection, mediatype, upload, metadata } = item as CreateItemParams
     const packageInfo = await getPackageInfo()
     const isTestCollection = this.options?.testmode ?? collection === 'test_collection'
     const headers = {
@@ -66,10 +100,28 @@ class InternetArchive {
     } as CreateItemResponse
   }
 
-  async getItems({
-    filters,
-    options,
-  }: GetItemParams): Promise<GetItemsResponse> {
+  /**
+   * Returns Items based on filters and options.
+   *
+   * @param items - filters (collection, subject, creator) and options (fields, rows).
+   * @param items.filters - Filter by collection, subject, creator.
+   * @param items.options - Options to specify fields returned and amount of items.
+   * @returns The responseHeader and response with items as docs.
+   *
+   * @see {@link https://archive.org/advancedsearch.php| Archive.org - Advanced Search API}
+   */
+  async getItems(items: {
+    filters: {
+      collection?: string
+      subject?: string
+      creator?: string
+    }
+    options?: {
+      fields?: string
+      rows?: string
+    }
+  }): Promise<GetItemsResponse> {
+    const { filters, options } = items as GetItemsParams
     const { fields, rows } = options || {}
     const params = {
       'q':
@@ -99,10 +151,27 @@ class InternetArchive {
     return await this.httpClient.makeRequest(endpoints.getItems, { params }) as any
   }
 
-  async getItem(id: string): Promise<GetItemResponse> {
-    return await this.httpClient.makeRequest(endpoints.getItem, { path: id }) as any
+  /**
+   * Returns an Item by identifier.
+   *
+   * @param identifier - The unique identifier for the item.
+   * @returns Item metadata, file paths, and other info.
+   *
+   * @see {@link https://archive.org/developers/metadata.html| Archive.org - Item Metadata API API}
+   */
+  async getItem(identifier: string): Promise<GetItemResponse> {
+    return await this.httpClient.makeRequest(endpoints.getItem, { path: identifier }) as any
   }
 
+  /**
+   * Updates an Item by identifier and metadata.
+   *
+   * @param identifier - The unique identifier for the item.
+   * @param metadata - The item metadata.
+   * @returns Update response (success, error, task_id, log).
+   *
+   * @see {@link https://archive.org/developers/metadata.html| Archive.org - Item Metadata API API}
+   */
   async updateItem(identifier: string, metadata: UpdateItemParams): Promise<UpdateItemResponse> {
     const packageInfo = await getPackageInfo()
     if (this.options?.setScanner && packageInfo) {
@@ -126,7 +195,22 @@ class InternetArchive {
     return await this.httpClient.makeRequest(endpoints.updateItem, { path: identifier, data, headers }) as any
   }
 
-  async uploadFile({ identifier, mediatype, file }: UploadFileParams): Promise<void> {
+  /**
+   * Uploads a File to a parent Item.
+   *
+   * @param upload - identifier, mediatype, file.
+   * @param upload.identifier - The unique identifier of the parent item.
+   * @param upload.mediatype - The upload mediatype.
+   * @param upload.file - The upload file.
+   *
+   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   */
+  async uploadFile(upload: {
+    identifier: string
+    mediatype: Mediatype
+    file: FileUpload
+  }): Promise<void> {
+    const { identifier, mediatype, file } = upload as UploadFileParams
     const { path, filename, data: buffer } = file || {}
     const headers = {
       'x-archive-interactive-priority': 1,
@@ -143,6 +227,13 @@ class InternetArchive {
     return await this.httpClient.makeRequest(endpoints.uploadFile, { data, path: `${identifier}/${filename}`, headers }) as any
   }
 
+  /**
+   * Deletes a File from an Item.
+   *
+   * @param path - The path of the file [identifier/filename].
+   *
+   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   */
   async deleteFile(path: string): Promise<void> {
     const headers = {
       'x-archive-cascade-delete': 1,
@@ -150,9 +241,17 @@ class InternetArchive {
     return await this.httpClient.makeRequest(endpoints.deleteFile, { path, headers }) as any
   }
 
-  async getItemTasks(id: string, criteria?: TaskCriteria): Promise<GetItemTasksResponse> {
+  /**
+   * Returns Tasks from an Item.
+   *
+   * @param identifier - identifier, mediatype, file.
+   * @param criteria - Parameters to filter item tasks.
+   *
+   * @see {@link https://archive.org/developers/tasks.html| Archive.org - Tasks API}
+   */
+  async getItemTasks(identifier: string, criteria?: TaskCriteria): Promise<GetItemTasksResponse> {
     const params = {
-      identifier: id,
+      identifier,
       ...criteria,
     }
     return await this.httpClient.makeRequest(endpoints.getTask, { params }) as any

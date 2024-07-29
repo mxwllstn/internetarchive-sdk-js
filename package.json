@@ -27,6 +27,8 @@
     "build-clean": "rm -rf dist",
     "build-esm": "npx tsc",
     "build-cjs": "npx rollup dist/index.js --file dist/index.cjs -p @rollup/plugin-json --format cjs --external fs,crypto,slugify,qs,zod,pkg-types",
+    "docs": "npm run docs:build",
+    "docs:build": "npx typedoc --plugin typedoc-plugin-rename-defaults --entryPointStrategy expand src/index.ts",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "test": "vitest run",
@@ -55,6 +57,8 @@
     "lint-staged": "^15.2.7",
     "rollup": "^4.18.0",
     "tsx": "^4.15.7",
+    "typedoc": "^0.26.5",
+    "typedoc-plugin-rename-defaults": "^0.7.1",
     "typescript": "^5.5.2",
     "typescript-eslint": "^7.14.1",
     "vitest": "^2.0.3"

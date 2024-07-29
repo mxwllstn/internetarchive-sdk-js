@@ -14,5 +14,5 @@
     "resolveJsonModule": true,
   },
   "include": ["src/**/*.js", "src/**/*.ts", "**/eslint.config.js"],
-  "exclude": ["node_modules", "dist", "test"]
+  "exclude": ["node_modules", "dist", "test", "docs"]
 }
