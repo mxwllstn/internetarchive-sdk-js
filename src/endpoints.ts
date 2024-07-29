@@ -15,7 +15,7 @@ export interface Endpoint {
 
 export default {
   /**
-   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   * @see {@link https://archive.org/developers/ias3.html Archive.org - ias3 Internet archive S3-like API}
    */
   createItem: {
     method: 'PUT',
@@ -29,7 +29,7 @@ export default {
   } as Endpoint,
 
   /**
-   * @see {@link https://archive.org/developers/metadata.html| Archive.org - Item Metadata API API}
+   * @see {@link https://archive.org/developers/metadata.html Archive.org - Item Metadata API API}
    */
   getItem: {
     method: 'GET',
@@ -38,7 +38,7 @@ export default {
   } as Endpoint,
 
   /**
-   * @see {@link https://archive.org/developers/metadata.html| Archive.org - Item Metadata API API}
+   * @see {@link https://archive.org/developers/metadata.html Archive.org - Item Metadata API API}
    */
   updateItem: {
     method: 'POST',
@@ -51,7 +51,7 @@ export default {
   } as Endpoint,
 
   /**
-   * @see {@link https://archive.org/advancedsearch.php| Archive.org - Advanced Search API}
+   * @see {@link https://archive.org/advancedsearch.php Archive.org - Advanced Search API}
    */
   getItems: {
     method: 'GET',
@@ -60,7 +60,7 @@ export default {
   } as Endpoint,
 
   /**
-   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   * @see {@link https://archive.org/developers/ias3.html Archive.org - ias3 Internet archive S3-like API}
    */
   uploadFile: {
     method: 'PUT',
@@ -74,7 +74,7 @@ export default {
   } as Endpoint,
 
   /**
-   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   * @see {@link https://archive.org/developers/ias3.html Archive.org - ias3 Internet archive S3-like API}
    */
   deleteFile: {
     method: 'DELETE',
@@ -84,7 +84,7 @@ export default {
   } as Endpoint,
 
   /**
-   * @see {@link https://archive.org/developers/tasks.html| Archive.org - Tasks API}
+   * @see {@link https://archive.org/developers/tasks.html Archive.org - Tasks API}
    */
   getTask: {
     method: 'GET',

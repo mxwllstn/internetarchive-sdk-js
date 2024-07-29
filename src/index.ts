@@ -18,12 +18,12 @@ class InternetArchive {
   /**
    * Provides access to Internet Archive APIs through methods
    *
-   * @param token - {@link https://archive.org/developers/tutorial-get-ia-credentials.html| S3-like API Key} formatted as "accesskey:secretkey" (required for all methods except getItem or getItems)
+   * @param token - {@link https://archive.org/developers/tutorial-get-ia-credentials.html S3-like API Key} formatted as "accesskey:secretkey" (required for all methods except getItem or getItems)
    * @param options - InternetArchive API options
-   * @param options.testmode - Option to add item to {@link https://archive.org/details/test_collection| Test Collection} (auto deletes in 30 days) - default FALSE
+   * @param options.testmode - Option to add item to {@link https://archive.org/details/test_collection Test Collection} (auto deletes in 30 days) - default FALSE
    * @param options.setScanner - option to add scanner metadata for internetarchive-sdk-js - default TRUE
-   * @see {@link https://archive.org/developers/tutorial-get-ia-credentials.html| Archive.org - Get your Internet Archive credentials}
-   * @see {@link https://archive.org/details/test_collection| Archive.org - Test Collection}
+   * @see {@link https://archive.org/developers/tutorial-get-ia-credentials.html Archive.org - Get your Internet Archive credentials}
+   * @see {@link https://archive.org/details/test_collection Archive.org - Test Collection}
    */
   constructor(token?: string, options: IaOptions = {}) {
     this.token = token ?? null
@@ -45,7 +45,7 @@ class InternetArchive {
    * @param item.metadata - The item metadata (optional).
    * @returns The item identifier, metadata, and upload filename.
    *
-   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   * @see {@link https://archive.org/developers/ias3.html Archive.org - ias3 Internet archive S3-like API}
    */
   async createItem(item: {
     identifier: string
@@ -104,7 +104,7 @@ class InternetArchive {
    * @param items.options - Options to specify fields returned and amount of items.
    * @returns The responseHeader and response with items as docs.
    *
-   * @see {@link https://archive.org/advancedsearch.php| Archive.org - Advanced Search API}
+   * @see {@link https://archive.org/advancedsearch.php Archive.org - Advanced Search API}
    */
   async getItems(items: {
     filters: {
@@ -153,7 +153,7 @@ class InternetArchive {
    * @param identifier - The unique identifier for the item.
    * @returns Item metadata, file paths, and other info.
    *
-   * @see {@link https://archive.org/developers/metadata.html| Archive.org - Item Metadata API API}
+   * @see {@link https://archive.org/developers/metadata.html Archive.org - Item Metadata API API}
    */
   async getItem(identifier: string): Promise<GetItemResponse> {
     return await this.httpClient.makeRequest(endpoints.getItem, { path: identifier }) as any
@@ -166,7 +166,7 @@ class InternetArchive {
    * @param metadata - The item metadata.
    * @returns Update response (success, error, task_id, log).
    *
-   * @see {@link https://archive.org/developers/metadata.html| Archive.org - Item Metadata API API}
+   * @see {@link https://archive.org/developers/metadata.html Archive.org - Item Metadata API API}
    */
   async updateItem(identifier: string, metadata: UpdateItemParams): Promise<UpdateItemResponse> {
     const packageInfo = await getPackageInfo()
@@ -199,7 +199,7 @@ class InternetArchive {
    * @param upload.mediatype - The upload mediatype.
    * @param upload.file - The upload file.
    *
-   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   * @see {@link https://archive.org/developers/ias3.html Archive.org - ias3 Internet archive S3-like API}
    */
   async uploadFile(upload: {
     identifier: string
@@ -228,7 +228,7 @@ class InternetArchive {
    *
    * @param path - The path of the file [identifier/filename].
    *
-   * @see {@link https://archive.org/developers/ias3.html| Archive.org - ias3 Internet archive S3-like API}
+   * @see {@link https://archive.org/developers/ias3.html Archive.org - ias3 Internet archive S3-like API}
    */
   async deleteFile(path: string): Promise<void> {
     const headers = {
@@ -243,7 +243,7 @@ class InternetArchive {
    * @param identifier - identifier, mediatype, file.
    * @param criteria - Parameters to filter item tasks.
    *
-   * @see {@link https://archive.org/developers/tasks.html| Archive.org - Tasks API}
+   * @see {@link https://archive.org/developers/tasks.html Archive.org - Tasks API}
    */
   async getItemTasks(identifier: string, criteria?: TaskCriteria): Promise<GetItemTasksResponse> {
     const params = {

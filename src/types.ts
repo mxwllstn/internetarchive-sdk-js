@@ -88,7 +88,7 @@ export interface GetItemTasksResponse {
 }
 
 /**
- * @see {@link https://archive.org/developers/tasks.html#criteria| Archive.org - Tasks API - Criteria}
+ * @see {@link https://archive.org/developers/tasks.html#criteria Archive.org - Tasks API - Criteria}
  */
 export interface TaskCriteria {
   task_id?: number
