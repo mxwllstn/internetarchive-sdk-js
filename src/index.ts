@@ -10,10 +10,6 @@ const defaultIaOptions = {
   setScanner: true,
 }
 
-/**
- * Provides access to Internet Archive APIs through methods
- *
- */
 class InternetArchive {
   token?: string | null
   options?: IaOptions
