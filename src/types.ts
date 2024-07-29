@@ -32,6 +32,18 @@ export interface UpdateItemResponse {
   log?: string
 }
 
+export interface GetItemsParams {
+  filters: {
+    collection?: string
+    subject?: string
+    creator?: string
+  }
+  options: {
+    fields?: string
+    rows?: string
+  }
+}
+
 export interface GetItemsResponse {
   responseHeader: {
     status: number
@@ -51,18 +63,11 @@ export interface GetItemResponse {
   d2: string
   dir: string
   files: Record<string, unknown>[]
-}
-
-export interface GetItemParams {
-  filters: {
-    collection?: string
-    subject?: string
-    creator?: string
-  }
-  options: {
-    fields?: string
-    rows?: string
-  }
+  files_count: number
+  metadata: Record<string, unknown>
+  server: string
+  uniq: number
+  workable_servers: string[]
 }
 
 export interface FileUpload {
@@ -82,6 +87,9 @@ export interface GetItemTasksResponse {
   value: Record<string, unknown>
 }
 
+/**
+ * @see {@link https://archive.org/developers/tasks.html#criteria| Archive.org - Tasks API - Criteria}
+ */
 export interface TaskCriteria {
   task_id?: number
   server?: string
