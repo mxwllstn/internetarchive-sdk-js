@@ -1,4 +1,4 @@
-# Internet Archive SDK for JavaScript
+# Internet Archive SDK for Node.js / Typescript
 [![Version](https://img.shields.io/npm/v/internetarchive-sdk-js.svg)](https://www.npmjs.org/package/internetarchive-sdk-js)
 
 NodeJS / Typescript SDK for Internet Archive APIs
