@@ -21,7 +21,8 @@ class HttpClient {
   options: IaOptions
   static default: typeof HttpClient
   constructor(token?: string | null, options: IaOptions = {}) {
-    (this.token = token, this.options = options)
+    this.token = token
+    this.options = options
   }
 
   checkToken = () => {
@@ -32,7 +33,7 @@ class HttpClient {
 
   makeRequest = async (endpoint: Endpoint, options?: RequestOptions): Promise<unknown> => {
     const { path, params, body, data } = options ?? {}
-    endpoint.auth && this.checkToken()
+    if (endpoint.auth) this.checkToken()
     const baseUrl = endpoint.baseUrl
     const apiUrl = baseUrl + (path ? `/${path}` : '') + (params ? `?${new URLSearchParams(params)}` : '')
 
@@ -57,10 +58,10 @@ class HttpClient {
 
       if (endpoint?.schema) {
         try {
-          endpoint.schema.type === 'headers' && schema?.[endpoint.schema.name].parse(headers)
-          endpoint.schema.type === 'data' && schema?.[endpoint.schema.name].parse(data)
-          endpoint.schema.type === 'qs' && schema?.[endpoint.schema.name].parse(data)
-          endpoint.schema.type === 'body' && schema?.[endpoint.schema.name].parse(body)
+          if (endpoint.schema.type === 'headers') schema?.[endpoint.schema.name].parse(headers)
+          if (endpoint.schema.type === 'data') schema?.[endpoint.schema.name].parse(data)
+          if (endpoint.schema.type === 'qs') schema?.[endpoint.schema.name].parse(data)
+          if (endpoint.schema.type === 'body') schema?.[endpoint.schema.name].parse(body)
         } catch (err) {
           if (err instanceof ZodError) {
             console.error(err)
@@ -77,7 +78,7 @@ class HttpClient {
         ...(data && { body: endpoint.schema.type === 'qs' ? qs.stringify(data) : data }),
       })
       if (!response.ok) {
-        const message = response.status === 403 ? 'archive.org token is incorrect or you do not have access to this collection.' : endpoint?.emptyBody ? response.statusText : JSON.parse(await response.text())?.error || response.statusText
+        const message = response.status === 403 ? 'archive.org token is incorrect or you do not have access to this collection.' : endpoint?.emptyBody ? response.statusText : JSON.parse(await response.text())?.error ?? response.statusText
         throw new IaApiError(message, response.status)
       } else {
         return endpoint?.emptyBody

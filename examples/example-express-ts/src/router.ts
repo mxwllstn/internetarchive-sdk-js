@@ -35,7 +35,7 @@ function handleResponse(res: Response, response: ApiResponse) {
 function handleError(res: Response, error: any) {
   const { message } = error
   console.log(message)
-  res.status(error.statusCode || 400).send({ error: message })
+  res.status(error.statusCode ?? 400).send({ error: message })
 }
 
 router.post(
@@ -54,8 +54,8 @@ router.post(
         /* create item with requested metadata */
         const mediatype = req.params.mediatype as Mediatype
         const body = req.body
-        const { subject, description } = body || {}
-        const collection = body?.collection || 'opensource_image'
+        const { subject, description } = body ?? {}
+        const collection = body?.collection ?? 'opensource_image'
         const metadata = {
           ...body,
           ...(subject && { subject }),
@@ -106,7 +106,7 @@ router.get('/item', async (req: Request, res: Response): Promise<void> => {
           },
         }
       : req.body
-    const { filters, options } = payload || {}
+    const { filters, options } = payload ?? {}
 
     handleResponse(res, { status: 200, data: await ia.getItems({ filters, options }) })
   } catch (err: any) {

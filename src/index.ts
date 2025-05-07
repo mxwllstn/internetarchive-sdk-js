@@ -77,7 +77,7 @@ class InternetArchive {
       })
     }
 
-    const data = upload?.data ? upload?.data : upload?.path ? fs.readFileSync(upload.path) : null
+    const data = upload?.data ?? (upload?.path ? fs.readFileSync(upload.path) : null)
 
     const path = upload?.filename ? `${identifier}/${upload?.filename}` : identifier
 
@@ -216,7 +216,7 @@ class InternetArchive {
     if (!filename) {
       throw new Error('filename required')
     }
-    const data = buffer ? buffer : path ? fs.readFileSync(path) : null
+    const data = buffer ?? (path ? fs.readFileSync(path) : null)
     if (!data) {
       throw new Error('buffer or path required')
     }
