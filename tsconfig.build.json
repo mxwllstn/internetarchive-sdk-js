@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+  },
+  "exclude": ["**/eslint.config.ts", "examples/**/*.js", "examples/**/*.ts", "test/**/*.ts"]
+}

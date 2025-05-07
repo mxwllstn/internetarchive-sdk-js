@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const InternetArchive = require('internetarchive-sdk-js')
 const ia = new InternetArchive()
 

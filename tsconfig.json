@@ -8,11 +8,12 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
+    "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
     "declaration": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*.js", "src/**/*.ts", "**/eslint.config.js"],
-  "exclude": ["node_modules", "dist", "test", "docs"]
+  "include": ["src/**/*.js", "src/**/*.ts", "examples/**/*.js", "examples/**/*.ts", "**/eslint.config.ts", "test/**/*.ts"],
+  "exclude": ["node_modules", "dist", "docs"]
 }
