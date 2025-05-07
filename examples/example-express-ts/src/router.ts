@@ -39,7 +39,7 @@ function handleError(res: Response, error: any) {
 }
 
 router.post(
-  '/item/:mediatype?',
+  '/item/:mediatype',
   upload.fields([{ name: 'upload', maxCount: 1 }]),
   async (req: Request, res: Response): Promise<void> => {
     try {

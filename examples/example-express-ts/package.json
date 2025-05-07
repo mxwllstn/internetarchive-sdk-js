@@ -7,24 +7,24 @@
   "author": "Max Stein <maxwell.stein@gmail.com> (https://maxstein.net",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf dist && npx tsc",
+    "build": "rm -rf dist && tsc",
     "dev": "node --env-file=.env --import=tsx --watch ./src/server.ts",
     "serve": "node dist/server.js",
     "postinstall": "npm run build"
   },
   "dependencies": {
-    "@types/express": "^4.17.21",
-    "@types/multer": "^1.4.11",
-    "@types/node": "^20.14.8",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "internetarchive-sdk-js": "link:../..",
+    "@types/express": "^5.0.1",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.15.14",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "internetarchive-sdk-js": "1.0.37",
     "morgan-body": "^2.6.9",
-    "multer": "1.4.5-lts.1",
-    "typescript": "^5.5.2"
+    "multer": "1.4.5-lts.2",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
-    "tsx": "^4.15.7"
+    "tsx": "^4.19.4"
   },
   "engines": {
     "node": ">=18"
