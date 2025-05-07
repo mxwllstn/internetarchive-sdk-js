@@ -7,6 +7,6 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "internetarchive-sdk-js": "link:../.."
+    "internetarchive-sdk-js": "1.0.38"
   }
 }
