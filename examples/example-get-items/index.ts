@@ -1,4 +1,4 @@
-import InternetArchive from 'internetarchive-sdk-js'
+import InternetArchive from '@internetarchive-sdk-js'
 const ia = new InternetArchive()
 
 void (async () => {

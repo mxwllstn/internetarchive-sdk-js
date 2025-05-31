@@ -12,7 +12,10 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
     "declaration": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@internetarchive-sdk-js": ["./src"],
+    }
   },
   "include": ["src/**/*.js", "src/**/*.ts", "examples/**/*.js", "examples/**/*.ts", "**/eslint.config.ts", "test/**/*.ts"],
   "exclude": ["node_modules", "dist", "docs"]
