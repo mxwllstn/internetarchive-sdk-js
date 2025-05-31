@@ -114,7 +114,7 @@ class InternetArchive {
     }
     options?: {
       fields?: string
-      rows?: string
+      rows?: number
     }
   }): Promise<GetItemsResponse> {
     const { filters, options } = items as GetItemsParams
