@@ -33,14 +33,14 @@ export interface UpdateItemResponse {
 }
 
 export interface GetItemsParams {
-  filters: {
+  filters?: {
     collection?: string
     subject?: string
     creator?: string
   }
-  options: {
+  options?: {
     fields?: string
-    rows?: string
+    rows?: number
   }
 }
 

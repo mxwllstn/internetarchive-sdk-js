@@ -8,7 +8,7 @@ test('get items', async () => {
     subject: 'basketball',
   }
   const options = {
-    rows: '10',
+    rows: 10,
     fields: 'identifier',
   }
   const { response } = await ia.getItems({ filters, options }) as any ?? {}

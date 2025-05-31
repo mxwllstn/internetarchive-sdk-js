@@ -106,19 +106,9 @@ class InternetArchive {
    *
    * @see {@link https://archive.org/advancedsearch.php Archive.org - Advanced Search API}
    */
-  async getItems(items: {
-    filters: {
-      collection?: string
-      subject?: string
-      creator?: string
-    }
-    options?: {
-      fields?: string
-      rows?: number
-    }
-  }): Promise<GetItemsResponse> {
-    const { filters, options } = items as GetItemsParams
-    const { fields, rows } = options || {}
+  async getItems(items: GetItemsParams): Promise<GetItemsResponse> {
+    const { filters, options } = items || {}
+    const { fields, rows } = options ?? {}
     const params = {
       'q':
         filters?.collection && filters?.subject && filters?.creator
