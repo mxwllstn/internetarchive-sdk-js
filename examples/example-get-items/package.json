@@ -1,0 +1,12 @@
+{
+  "name": "@example/get-items",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --import=tsx --watch ./index.ts"
+  },
+  "dependencies": {
+    "tsx": "^4.19.4"
+  }
+}

@@ -1,12 +1,12 @@
 import express, { Router, Request, Response } from 'express'
-import InternetArchive, { Mediatype } from 'internetarchive-sdk-js'
+import InternetArchive, { Mediatype } from '@internetarchive-sdk-js'
 import multer from 'multer'
 import fs from 'node:fs/promises'
 import { randomBytes } from 'crypto'
 import { tmpdir } from 'os'
 
 const { IA_TOKEN } = process.env || {}
-const ia = new InternetArchive((IA_TOKEN as string), { testmode: true, setScanner: true })
+const ia = new InternetArchive((IA_TOKEN), { testmode: true, setScanner: true })
 
 const router = express.Router() as Router
 
