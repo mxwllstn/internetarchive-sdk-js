@@ -46,8 +46,8 @@ void (async () => {
 ### Update Item (Requires ["S3-Like API Key"](https://archive.org/account/s3.php))
 ```javascript
 import InternetArchive from 'internetarchive-sdk-js'
-const { API_KEY } = process.env || {}
-const ia = new InternetArchive(API_KEY, { testmode: true })
+const { IA_TOKEN } = process.env || {}
+const ia = new InternetArchive(IA_TOKEN, { testmode: true })
 
 void (async () => {
   const itemId = 'internetarchive-test-item-id'
