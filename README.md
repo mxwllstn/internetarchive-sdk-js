@@ -42,7 +42,31 @@ void (async () => {
   console.log(items.response.docs)
 })()
 ```
-  
+### Create Item (Requires ["S3-Like API Key"](https://archive.org/account/s3.php))
+```javascript
+import InternetArchive from 'internetarchive-sdk-js'
+const { IA_TOKEN } = process.env || {}
+const ia = new InternetArchive(IA_TOKEN, { testmode: true })
+
+void (async () => {
+  const filePath = './generic-image.jpg'
+  await ia.createItem({
+    identifier: `generic-image-${Date.now()}`,
+    collection: 'opensource_image',
+    mediatype: 'image',
+    upload: {
+      filename: 'generic-image.jpg',
+      path: filePath,
+    },
+    metadata: {
+      title: 'Generic image',
+      creator: 'Generic creator',
+      subject: 'generic',
+    },
+  })
+})()
+```
+
 ### Update Item (Requires ["S3-Like API Key"](https://archive.org/account/s3.php))
 ```javascript
 import InternetArchive from 'internetarchive-sdk-js'
