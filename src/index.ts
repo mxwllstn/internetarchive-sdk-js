@@ -112,13 +112,13 @@ class InternetArchive {
     const params = {
       'q':
         filters?.collection && filters?.subject && filters?.creator
-          ? `collection:(${filters?.collection})&subject:("${filters?.subject}")&creator:("${filters?.creator}")`
+          ? `collection:(${filters?.collection}) AND subject:(${filters?.subject}) AND creator:(${filters?.creator})`
           : filters?.collection && filters?.subject
-            ? `collection:(${filters.collection})&subject:("${filters.subject}")`
+            ? `collection:(${filters.collection}) AND subject:(${filters.subject})`
             : filters?.collection && filters?.creator
-              ? `collection:(${filters.collection})&creator:("${filters.creator}")`
+              ? `collection:(${filters.collection}) AND creator:(${filters.creator})`
               : filters?.subject && filters?.creator
-                ? `subject:(${filters.subject})&creator:("${filters.creator}")`
+                ? `subject:(${filters.subject}) AND creator:(${filters.creator})`
                 : filters?.collection
                   ? `collection:(${filters.collection})`
                   : filters?.subject
