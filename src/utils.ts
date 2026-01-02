@@ -35,25 +35,26 @@ export function isASCII(str: string): boolean {
 }
 
 export function parseZodErrorToString(err: z.ZodError) {
-  return err.issues.map((issue, _idx) => {
-    const path = issue.path?.[0] ? `${issue.path?.[0]} - ` : ''
-    return path + `${issue.message}`
-  }).join(', ')
+  return err.issues
+    .map((issue) => {
+      const path = issue.path?.[0] ? `${String(issue.path[0])} - ` : ''
+      return path + issue.message
+    })
+    .join(', ')
 }
 
 /* https://github.com/colinhacks/zod/issues/61 */
-export function oneOf<A, K1 extends Extract<keyof A, string>, K2 extends Extract<keyof A, string>, R extends A &(
-  Required<Pick<A, K1>> & Record<K2, undefined> |
-  Required<Pick<A, K2>> & Record<K1, undefined>
-)>(key1: K1, key2: K2): ((arg: A, ctx: RefinementCtx) => arg is R) {
-  return (arg, ctx): arg is R => {
+export function oneOf<
+  A,
+  K1 extends Extract<keyof A, string>,
+  K2 extends Extract<keyof A, string>,
+>(key1: K1, key2: K2) {
+  return (arg: A, ctx: RefinementCtx): void => {
     if ((arg[key1] === undefined) === (arg[key2] === undefined)) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom', // ✅ use string literal instead of z.ZodIssueCode.custom
         message: `Either <${key1}> or <${key2}> must be set.`,
       })
-      return false
     }
-    return true
   }
 }
