@@ -4,17 +4,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node --env-file=.env --import=tsx ./server.ts"
+    "dev": "tsx watch --env-file-if-exists=.env ./server.ts"
   },
   "dependencies": {
-    "@types/express": "^5.0.2",
+    "@types/express": "^5.0.6",
     "@types/multer": "^2.0.0",
-    "@types/node": "^22.15.29",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
+    "@types/node": "^25.0.3",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
     "morgan-body": "^2.6.9",
     "multer": "^2.0.2",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }

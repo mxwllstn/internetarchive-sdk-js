@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "node --import=tsx ./index.ts"
+    "start": "tsx ./index.ts"
   },
   "dependencies": {
-    "tsx": "^4.19.4"
+    "tsx": "^4.21.0"
   }
 }

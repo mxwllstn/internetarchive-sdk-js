@@ -11,5 +11,5 @@ void (async () => {
     fields: 'identifier',
   }
   const items = await ia.getItems({ filters, options })
-  console.log(items.response.docs)
+  console.log(items?.response?.docs)
 })()
