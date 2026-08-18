@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "allowJs": false,
+    "rootDir": "./src",
   },
   "exclude": ["**/eslint.config.ts", "examples/**/*.js", "examples/**/*.ts", "test/**/*.ts"]
 }

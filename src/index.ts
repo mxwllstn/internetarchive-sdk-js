@@ -1,7 +1,7 @@
 import fs from 'fs'
 import HttpClient from './HttpClient.js'
 import endpoints from './endpoints.js'
-import { type IaOptions, CreateItemRequestHeaders, Mediatype, FileUpload, CreateItemResponse, UpdateItemParams, UpdateItemRequestPatch, UpdateItemRequestData, UpdateItemResponse, GetItemResponse, UploadFileParams, UploadFileHeaders, GetItemTasksResponse, TaskCriteria, GetItemsResponse, GetItemsParams, CreateItemParams } from './types.js'
+import { type IaOptions, CreateItemRequestHeaders, Mediatype, FileUpload, CreateItemResponse, UpdateItemParams, UpdateItemRequestPatch, UpdateItemRequestData, UpdateItemResponse, GetItemResponse, UploadFileHeaders, GetItemTasksResponse, TaskCriteria, GetItemsResponse, GetItemsParams } from './types.js'
 import { isASCII, getPackageInfo } from './utils.js'
 export * from './types.js'
 
@@ -54,7 +54,7 @@ class InternetArchive {
     upload: FileUpload
     metadata?: Record<string, unknown>
   }): Promise<CreateItemResponse> {
-    const { identifier, collection, mediatype, upload, metadata } = item as CreateItemParams
+    const { identifier, collection, mediatype, upload, metadata } = item
     const packageInfo = await getPackageInfo()
     const isTestCollection = this.options?.testmode ?? collection === 'test_collection'
     const headers = {
@@ -187,7 +187,7 @@ class InternetArchive {
     mediatype: Mediatype
     file: FileUpload
   }): Promise<void> {
-    const { identifier, mediatype, file } = upload as UploadFileParams
+    const { identifier, mediatype, file } = upload
     const { path, filename, data: buffer } = file || {}
     const headers = {
       'x-archive-interactive-priority': 1,
