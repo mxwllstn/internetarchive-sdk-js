@@ -56,8 +56,6 @@ class HttpClient {
         throw new IaModuleError('Cannot pass data and body data at the same time.')
       }
 
-      console.log({ endpoint, options })
-
       if (endpoint?.schema) {
         try {
           if (endpoint.schema.type === 'headers') schema?.[endpoint.schema.name].parse(headers)

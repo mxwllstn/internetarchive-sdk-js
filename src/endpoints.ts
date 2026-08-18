@@ -64,7 +64,7 @@ export default {
    */
   uploadFile: {
     method: 'PUT',
-    baseUrl: 'http://s3.us.archive.org',
+    baseUrl: 'https://s3.us.archive.org',
     schema: {
       type: 'headers',
       name: 'UploadFileHeaders',
@@ -78,7 +78,7 @@ export default {
    */
   deleteFile: {
     method: 'DELETE',
-    baseUrl: 'http://s3.us.archive.org',
+    baseUrl: 'https://s3.us.archive.org',
     auth: true,
     emptyBody: true,
   } as Endpoint,

@@ -83,7 +83,7 @@ export interface UploadFileParams {
 }
 
 export interface GetItemTasksResponse {
-  succes: boolean
+  success: boolean
   value: Record<string, unknown>
 }
 

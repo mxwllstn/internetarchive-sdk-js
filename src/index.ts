@@ -109,23 +109,14 @@ class InternetArchive {
   async getItems(items: GetItemsParams): Promise<GetItemsResponse> {
     const { filters, options } = items || {}
     const { fields, rows } = options ?? {}
+    const clauses = [
+      filters?.collection && `collection:(${filters.collection})`,
+      filters?.subject && `subject:(${filters.subject})`,
+      filters?.creator && `creator:(${filters.creator})`,
+    ].filter(Boolean)
+
     const params = {
-      'q':
-        filters?.collection && filters?.subject && filters?.creator
-          ? `collection:(${filters?.collection}) AND subject:(${filters?.subject}) AND creator:(${filters?.creator})`
-          : filters?.collection && filters?.subject
-            ? `collection:(${filters.collection}) AND subject:(${filters.subject})`
-            : filters?.collection && filters?.creator
-              ? `collection:(${filters.collection}) AND creator:(${filters.creator})`
-              : filters?.subject && filters?.creator
-                ? `subject:(${filters.subject}) AND creator:(${filters.creator})`
-                : filters?.collection
-                  ? `collection:(${filters.collection})`
-                  : filters?.subject
-                    ? `subject:(${filters.subject})`
-                    : filters?.creator
-                      ? `creator:(${filters.creator})`
-                      : null,
+      'q': clauses.length ? clauses.join(' AND ') : null,
       ...(fields && { 'fl[]': fields.replace(/ /g, '') }),
       'rows': Number(rows) || 50,
       'output': 'json',
