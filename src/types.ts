@@ -9,6 +9,35 @@ export type UpdateItemRequestPatch = z.infer<typeof UpdateItemRequestPatch>
 export type UpdateItemRequestData = z.infer<typeof UpdateItemRequestData>
 export type UploadFileHeaders = z.infer<typeof UploadFileHeaders>
 
+export interface IAFile {
+  name: string
+  source: string
+  format: string
+  size?: string
+  md5?: string
+  sha1?: string
+  crc32?: string
+  mtime?: string
+  btih?: string
+  rotation?: string
+}
+
+export interface IASearchDoc {
+  identifier: string
+  title?: string
+  creator?: string | string[]
+  date?: string
+  subject?: string | string[]
+  description?: string | string[]
+  mediatype?: string
+  collection?: string | string[]
+  downloads?: number
+  item_size?: number
+  avg_rating?: number
+  num_reviews?: number
+  [key: string]: unknown
+}
+
 export interface CreateItemParams {
   identifier: string
   collection: string
@@ -37,10 +66,13 @@ export interface GetItemsParams {
     collection?: string
     subject?: string
     creator?: string
+    query?: string
   }
   options?: {
-    fields?: string
+    fields?: string | string[]
     rows?: number
+    start?: number
+    sort?: string
   }
 }
 
@@ -52,8 +84,8 @@ export interface GetItemsResponse {
   }
   response: {
     numFound: number
-    start: 0
-    docs: Record<string, unknown>[]
+    start: number
+    docs: IASearchDoc[]
   }
 }
 
@@ -62,7 +94,7 @@ export interface GetItemResponse {
   d1: string
   d2: string
   dir: string
-  files: Record<string, unknown>[]
+  files: IAFile[]
   files_count: number
   metadata: Record<string, unknown>
   server: string
