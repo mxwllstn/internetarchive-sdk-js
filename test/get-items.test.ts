@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import InternetArchive from '../dist'
+import InternetArchive from '../dist/index.js'
 const ia = new InternetArchive()
 
 test('get items', async () => {

@@ -28,7 +28,7 @@
     "build-esm": "tsc --project ./tsconfig.build.json",
     "build-cjs": "rollup dist/index.js --file dist/index.cjs -p @rollup/plugin-json --format cjs --external fs,crypto,slugify,qs,zod,pkg-types",
     "docs": "npm run docs:build",
-    "docs:build": "typedoc --plugin typedoc-plugin-rename-defaults --entryPointStrategy expand src/index.ts",
+    "docs:build": "typedoc --plugin typedoc-plugin-rename-defaults --entryPointStrategy expand --tsconfig tsconfig.docs.json src/index.ts",
     "dev:server": "pnpm --filter @example/server run dev",
     "dev": "pnpm --filter @example/get-items run start",
     "lint": "eslint .",
