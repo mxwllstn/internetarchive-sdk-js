@@ -27,6 +27,7 @@ export interface IASearchDoc {
   title?: string
   creator?: string | string[]
   date?: string
+  publicdate?: string
   subject?: string | string[]
   description?: string | string[]
   mediatype?: string
