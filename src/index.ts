@@ -99,31 +99,35 @@ class InternetArchive {
   /**
    * Returns Items based on filters and options.
    *
-   * @param items - filters (collection, subject, creator) and options (fields, rows).
-   * @param items.filters - Filter by collection, subject, creator.
-   * @param items.options - Options to specify fields returned and amount of items.
+   * @param items - filters (collection, subject, creator, query) and options (fields, rows, start, sort).
+   * @param items.filters - Filter by collection, subject, creator, or a raw Lucene query string.
+   * @param items.options - Options to specify fields returned, amount of items, pagination offset, and sort order.
    * @returns The responseHeader and response with items as docs.
    *
    * @see {@link https://archive.org/advancedsearch.php Archive.org - Advanced Search API}
    */
   async getItems(items: GetItemsParams): Promise<GetItemsResponse> {
     const { filters, options } = items || {}
-    const { fields, rows } = options ?? {}
+    const { fields, rows, start, sort } = options ?? {}
     const clauses = [
       filters?.collection && `collection:(${filters.collection})`,
       filters?.subject && `subject:(${filters.subject})`,
       filters?.creator && `creator:(${filters.creator})`,
+      filters?.query,
     ].filter(Boolean)
+
+    const normalizedFields = Array.isArray(fields) ? fields.join(',') : fields?.replace(/ /g, '')
 
     const params = {
       'q': clauses.length ? clauses.join(' AND ') : null,
-      ...(fields && { 'fl[]': fields.replace(/ /g, '') }),
+      ...(normalizedFields && { 'fl[]': normalizedFields }),
       'rows': Number(rows) || 50,
+      ...(start !== undefined && { start: start }),
       'output': 'json',
-      'sort[]': 'date desc',
+      'sort[]': sort ?? 'date desc',
     }
     if (!params.q) {
-      throw new Error('collection, subject, or creator required')
+      throw new Error('collection, subject, creator, or query required')
     }
     return await this.httpClient.makeRequest(endpoints.getItems, { params }) as any
   }
