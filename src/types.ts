@@ -67,6 +67,8 @@ export interface GetItemsParams {
     collection?: string
     subject?: string
     creator?: string
+    uploader?: string
+    mediatype?: string
     query?: string
   }
   options?: {

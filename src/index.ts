@@ -113,6 +113,8 @@ class InternetArchive {
       filters?.collection && `collection:(${filters.collection})`,
       filters?.subject && `subject:(${filters.subject})`,
       filters?.creator && `creator:(${filters.creator})`,
+      filters?.uploader && `uploader:(${filters.uploader})`,
+      filters?.mediatype && `mediatype:(${filters.mediatype})`,
       filters?.query,
     ].filter(Boolean)
 
