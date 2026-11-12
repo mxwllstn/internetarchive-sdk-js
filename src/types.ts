@@ -74,7 +74,7 @@ export interface GetItemsParams {
   options?: {
     fields?: string | string[]
     rows?: number
-    start?: number
+    page?: number
     sort?: string
   }
 }
