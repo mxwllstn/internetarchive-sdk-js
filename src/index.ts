@@ -108,7 +108,7 @@ class InternetArchive {
    */
   async getItems(items: GetItemsParams): Promise<GetItemsResponse> {
     const { filters, options } = items || {}
-    const { fields, rows, start, sort } = options ?? {}
+    const { fields, rows, page, sort } = options ?? {}
     const clauses = [
       filters?.collection && `collection:(${filters.collection})`,
       filters?.subject && `subject:(${filters.subject})`,
@@ -124,7 +124,7 @@ class InternetArchive {
       'q': clauses.length ? clauses.join(' AND ') : null,
       ...(normalizedFields && { 'fl[]': normalizedFields }),
       'rows': Number(rows) || 50,
-      ...(start !== undefined && { start: start }),
+      ...(page !== undefined && { page: page }),
       'output': 'json',
       'sort[]': sort ?? 'date desc',
     }
