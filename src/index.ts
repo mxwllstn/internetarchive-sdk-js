@@ -99,7 +99,7 @@ class InternetArchive {
   /**
    * Returns Items based on filters and options.
    *
-   * @param items - filters (collection, subject, creator, query) and options (fields, rows, start, sort).
+   * @param items - filters (collection, subject, creator, query) and options (fields, rows, page, sort).
    * @param items.filters - Filter by collection, subject, creator, or a raw Lucene query string.
    * @param items.options - Options to specify fields returned, amount of items, pagination offset, and sort order.
    * @returns The responseHeader and response with items as docs.
